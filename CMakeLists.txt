@@ -13,11 +13,9 @@ include_directories(.)
 
 add_executable(
         QR_IO
-        LICENSE
         main.cpp
         BitBuffer.cpp
         BitBuffer.h
-        README.md
 )
 
 # Link against OpenCV libraries
