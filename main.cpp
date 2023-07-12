@@ -13,7 +13,7 @@ int main() {
 
     cout << t;
 
-    t.appendBits(40, 32);
+//    t.appendBits(40, 32);
 
     cv::Mat image(100, 100, CV_8UC3, cv::Scalar(0, 255, 0));
 

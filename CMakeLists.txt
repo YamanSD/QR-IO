@@ -7,7 +7,7 @@ find_package(OpenCV REQUIRED)
 # Add include directories for OpenCV headers
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 include_directories(.)
 
@@ -16,6 +16,10 @@ add_executable(
         main.cpp
         BitBuffer.cpp
         BitBuffer.h
+        QrCode.cpp
+        QrCode.h
+        QrSegment.cpp
+        QrSegment.h
 )
 
 # Link against OpenCV libraries
