@@ -6,11 +6,25 @@
 
 #IncludeRegexTransform: 
 
+/Users/yamansirajaldeen/Documents/GitHub/QR-IO/BitBuffer.h
+cstdint
+-
+stdexcept
+-
+string
+-
+vector
+-
+iostream
+-
+
 /Users/yamansirajaldeen/Documents/GitHub/QR-IO/main.cpp
 opencv2/opencv.hpp
 -
 iostream
 -
+BitBuffer.h
+/Users/yamansirajaldeen/Documents/GitHub/QR-IO/BitBuffer.h
 
 /usr/local/Cellar/opencv/4.8.0_1/include/opencv4/opencv2/calib3d.hpp
 opencv2/core.hpp

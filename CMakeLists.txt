@@ -11,10 +11,14 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(.)
 
-add_executable(QR_IO
+add_executable(
+        QR_IO
         LICENSE
         main.cpp
-        README.md)
+        BitBuffer.cpp
+        BitBuffer.h
+        README.md
+)
 
 # Link against OpenCV libraries
 target_link_libraries(QR_IO ${OpenCV_LIBS})

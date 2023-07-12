@@ -84,6 +84,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/yamansirajaldeen/Documents/GitHub/QR-IO/BitBuffer.cpp">
+			<Option target="QR_IO"/>
+		</Unit>
+		<Unit filename="/Users/yamansirajaldeen/Documents/GitHub/QR-IO/BitBuffer.h">
+			<Option target="QR_IO"/>
+		</Unit>
 		<Unit filename="/Users/yamansirajaldeen/Documents/GitHub/QR-IO/LICENSE">
 			<Option target="QR_IO"/>
 		</Unit>

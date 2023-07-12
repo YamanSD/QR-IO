@@ -129,6 +129,30 @@ QR_IO/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QR_IO.dir/build.make CMakeFiles/QR_IO.dir/build
 .PHONY : QR_IO/fast
 
+BitBuffer.o: BitBuffer.cpp.o
+.PHONY : BitBuffer.o
+
+# target to build an object file
+BitBuffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/QR_IO.dir/build.make CMakeFiles/QR_IO.dir/BitBuffer.cpp.o
+.PHONY : BitBuffer.cpp.o
+
+BitBuffer.i: BitBuffer.cpp.i
+.PHONY : BitBuffer.i
+
+# target to preprocess a source file
+BitBuffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/QR_IO.dir/build.make CMakeFiles/QR_IO.dir/BitBuffer.cpp.i
+.PHONY : BitBuffer.cpp.i
+
+BitBuffer.s: BitBuffer.cpp.s
+.PHONY : BitBuffer.s
+
+# target to generate assembly for a file
+BitBuffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/QR_IO.dir/build.make CMakeFiles/QR_IO.dir/BitBuffer.cpp.s
+.PHONY : BitBuffer.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -162,6 +186,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... QR_IO"
+	@echo "... BitBuffer.o"
+	@echo "... BitBuffer.i"
+	@echo "... BitBuffer.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

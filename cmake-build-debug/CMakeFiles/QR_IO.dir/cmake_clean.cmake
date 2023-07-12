@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/QR_IO.dir/BitBuffer.cpp.o"
   "CMakeFiles/QR_IO.dir/main.cpp.o"
   "QR_IO"
   "QR_IO.pdb"

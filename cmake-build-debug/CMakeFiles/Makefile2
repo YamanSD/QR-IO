@@ -81,12 +81,12 @@ clean: CMakeFiles/QR_IO.dir/clean
 CMakeFiles/QR_IO.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QR_IO.dir/build.make CMakeFiles/QR_IO.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QR_IO.dir/build.make CMakeFiles/QR_IO.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/yamansirajaldeen/Documents/GitHub/QR-IO/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target QR_IO"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/yamansirajaldeen/Documents/GitHub/QR-IO/cmake-build-debug/CMakeFiles --progress-num=1,2,3 "Built target QR_IO"
 .PHONY : CMakeFiles/QR_IO.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/QR_IO.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/yamansirajaldeen/Documents/GitHub/QR-IO/cmake-build-debug/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/yamansirajaldeen/Documents/GitHub/QR-IO/cmake-build-debug/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/QR_IO.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/yamansirajaldeen/Documents/GitHub/QR-IO/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/QR_IO.dir/rule
