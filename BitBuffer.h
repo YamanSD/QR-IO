@@ -30,6 +30,7 @@
 #include <vector>
 #include <iostream>
 
+
 namespace qr_io {
     /*
      * BitBuffer: 1.0
@@ -80,7 +81,6 @@ namespace qr_io {
      */
     std::ostream& operator<<(std::ostream&, const BitBuffer&);
 }
-
 
 
 #endif //QR_IO_BITBUFFER_H
