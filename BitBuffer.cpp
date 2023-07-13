@@ -26,8 +26,7 @@
 
 namespace qr_io {
     using std::domain_error, std::endl,
-            std::ostream, std::to_string,
-            std::uint32_t;
+            std::ostream, std::to_string;
 
     /*
      * Pre-Conditions:
@@ -39,7 +38,7 @@ namespace qr_io {
      *
      * Assertion is performed by the checkInput function.
      */
-    void BitBuffer::appendBits(uint32_t value, int n) {
+    void BitBuffer::appendBits(int value, int n) {
         /* Assert 0 <= n <= 31, value < 2 ^ n */
         checkInput(value, n);
 
@@ -54,7 +53,7 @@ namespace qr_io {
      *          If true continue.
      *          Otherwise, std::domain_error is thrown
      */
-     void BitBuffer::checkInput(uint32_t value, int n) {
+     void BitBuffer::checkInput(int value, int n) {
         /*
          * Checks if n is less than 0,
          * then if n is greater than 31,

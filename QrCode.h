@@ -84,6 +84,8 @@ namespace qr_io {
 
         [[nodiscard]] int getFormatBits(Ecc);
 
+        static std::vector<QrSegment> makeSegments(const std::string&);
+
     private:
         static const int N1_PENALTY{3}, N2_PENALTY{3},
                             N3_PENALTY{40}, N4_PENALTY{10};

@@ -24,7 +24,6 @@
 #ifndef QR_IO_BITBUFFER_H
 #define QR_IO_BITBUFFER_H
 
-#include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -48,14 +47,14 @@ namespace qr_io {
          *      Lower n bits of value appended into the buffer.
          *      Their order remains intact.
          */
-        void appendBits(std::uint32_t, int);
+        void appendBits(int, int);
     private:
         /*
          * Checks if 0 <= n <= 31, value < 2 ^ n.
          *          If true continue.
          *          Otherwise, std::domain_error is thrown
          */
-        static void checkInput(std::uint32_t, int);
+        static void checkInput(int, int);
     };
 
     /*

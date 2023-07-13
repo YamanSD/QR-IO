@@ -34,33 +34,36 @@
 namespace qr_io {
     class QrSegment final {
     public:
-        [[nodiscard]] int getTotalBits(const std::vector<QrSegment>&, int) const;
+        // Used for Numeric & Alphanumeric
+        QrSegment(ModeType, const std::string&);
+
+        // Used for auto determination of mode between numeric, alpha, or bytes.
+        explicit QrSegment(const std::string&);
+
+        // Used for ECI
+        explicit QrSegment(long);
+
+        // Used for bytes
+        explicit QrSegment(const std::vector<int>&);
+
+        [[nodiscard]] size_t getDataSize() const;
+
+        [[nodiscard]] static size_t getTotalBits(const std::vector<QrSegment>&, int) ;
 
         [[nodiscard]] const BitBuffer& getData() const;
 
-        [[nodiscard]] int getNumChars() const;
+        [[nodiscard]] size_t getSize() const;
 
         [[nodiscard]] const Mode& getMode() const;
 
-        QrSegment(const Mode&, int, const BitBuffer&);
-
-        QrSegment(const Mode&, int, BitBuffer&&);
-
-        QrSegment(ModeType, const std::string&);
-
-        QrSegment(ModeType, long);
-
-        QrSegment(ModeType, const std::vector<int>&);
-
-        [[nodiscard]] static bool isAlphanumeric(const std::string&);
-
-        [[nodiscard]] static bool isNumeric(const std::string&);
-
-
     private:
-        BitBuffer data;
-        int size;
-        const Mode& mode;
+        BitBuffer buffer;
+        size_t size;
+        Mode mode;
+
+        [[nodiscard]] static ModeType getDataType(const std::string&);
+
+        [[nodiscard]] static int validAlphanumeric(char c);
     };
 }
 

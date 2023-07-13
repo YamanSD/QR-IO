@@ -42,7 +42,7 @@ namespace qr_io {
      * Encapsulates the ModeType enum class.
      * Provides vital functionality to work with the QR char Modes.
      */
-    class Mode {
+    class Mode final {
     public:
         /*
          * Pre-Conditions:
@@ -72,6 +72,15 @@ namespace qr_io {
          *      The result is in the range [0, 16].
          */
         [[nodiscard]] int charWidth(int) const;
+
+        /*
+         * Pre-Conditions:
+         *      None
+         *
+         * Post-Conditions:
+         *      Returns the ModeType encapsulated by the Mode instance.
+         */
+        [[nodiscard]] ModeType getModeType() const;
     private:
         /*
          * Pre-Conditions:

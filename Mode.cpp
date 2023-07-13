@@ -82,4 +82,15 @@ namespace qr_io {
     int Mode::charWidth(int version) const {
         return char_widths[modeIndex()][(version + 7) / 17];
     }
+
+    /*
+     * Pre-Conditions:
+     *      None
+     *
+     * Post-Conditions:
+     *      Returns the ModeType encapsulated by the Mode instance.
+     */
+    ModeType Mode::getModeType() const {
+        return mode;
+    }
 }
