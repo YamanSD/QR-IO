@@ -37,19 +37,6 @@ namespace qr_io {
      *
      * Used to store bits dynamically.
      * Inherits from a std::vector<bool>.
-     *
-     * Public Methods:
-     *      void appendBits(std::uint32_t value, int n);
-     *          Appends the lower n bits of value into the bit buffer.
-     *          The order of the bits must remain intact;
-     *          (i.e. append from the most major, to the least major bit)
-     *          Assertions: 0 <= n <= 31, value < 2 ^ n.
-     *
-     * Private Methods:
-     *      static void checkInput(std::uint32_t value, int n) const;
-     *          Checks if 0 <= n <= 31, value < 2 ^ n.
-     *          If true continue.
-     *          Otherwise, std::domain_error is thrown.
      */
     class BitBuffer final: public std::vector<bool>  {
     public:

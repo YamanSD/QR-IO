@@ -20,6 +20,8 @@ add_executable(
         QrCode.h
         QrSegment.cpp
         QrSegment.h
+        Mode.cpp
+        Mode.h
 )
 
 # Link against OpenCV libraries
