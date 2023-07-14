@@ -32,6 +32,17 @@
 
 
 namespace qr_io {
+    /*
+     * A segment of character/binary/control data in a QR Code symbol.
+     * Instances of this class are immutable.
+     * The mid-level way to create a segment is to take the payload data
+     * and call a static factory function such as QrSegment::makeNumeric().
+     * The low-level way to create a segment is to custom-make the bit buffer
+     * and call the QrSegment() constructor with appropriate values.
+     * This segment class imposes no length restrictions, but QR Codes have restrictions.
+     * Even in the most favorable conditions, a QR Code can only hold 7089 characters of data.
+     * Any segment longer than this is meaningless for the purpose of generating QR Codes.
+     */
     class QrSegment final {
     public:
         // Used for Numeric & Alphanumeric
@@ -48,7 +59,7 @@ namespace qr_io {
 
         [[nodiscard]] size_t getDataSize() const;
 
-        [[nodiscard]] static size_t getTotalBits(const std::vector<QrSegment>&, int) ;
+        [[nodiscard]] static long getTotalBits(const std::vector<QrSegment>&, int) ;
 
         [[nodiscard]] const BitBuffer& getData() const;
 
@@ -57,13 +68,15 @@ namespace qr_io {
         [[nodiscard]] const Mode& getMode() const;
 
     private:
-        BitBuffer buffer;
-        size_t size;
-        Mode mode;
-
         [[nodiscard]] static ModeType getDataType(const std::string&);
 
         [[nodiscard]] static int validAlphanumeric(char c);
+
+        BitBuffer buffer;
+
+        Mode mode;
+
+        size_t size;
     };
 }
 

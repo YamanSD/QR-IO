@@ -62,12 +62,9 @@ namespace qr_io {
             return 2;
         } else if (mode == ModeType::KANJI) {
             return 3;
-        } else if (mode == ModeType::ECI) {
-            return 4;
+        } else {
+            return 4;  // ECI
         }
-
-        // Will never reach here.
-        return -1;
     }
 
     /*

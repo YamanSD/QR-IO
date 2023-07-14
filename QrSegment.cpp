@@ -144,9 +144,9 @@ namespace qr_io {
         return mode;
     }
 
-    size_t QrSegment::getTotalBits(const vector<QrSegment>& segments,
+    long QrSegment::getTotalBits(const vector<QrSegment>& segments,
                                 int version) {
-        size_t result{0}, ccbits;
+        long result{0}, ccbits;
 
         for (const auto& s: segments) {
             ccbits = s.mode.charWidth(version);
@@ -162,7 +162,7 @@ namespace qr_io {
                 return -1;
             }
 
-            result += s.getDataSize();
+            result += static_cast<long>(s.getDataSize());
         }
 
         return result;

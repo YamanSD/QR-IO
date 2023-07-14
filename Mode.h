@@ -29,6 +29,7 @@ namespace qr_io {
     /*
      * Enumeration class for the mode types specified by the standard.
      * Each mode type corresponds to its binary representation in the standard.
+     * Describes how the data bits are interpreted.
      */
     enum class ModeType {
         NUMERIC = 0b0001,
@@ -105,7 +106,7 @@ namespace qr_io {
             {0, 0, 0}      // ECI
         };
 
-        /* ModeType enum value representing the actual value of the Mode */
+        /* ModeType enum value describing how the data bits are interpreted */
         ModeType mode;
     };
 }

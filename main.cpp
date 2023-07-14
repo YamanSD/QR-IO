@@ -4,6 +4,8 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include "BitBuffer.h"
+#include "QrCode.h"
+#include "QrSegment.h"
 
 int main() {
     qr_io::BitBuffer t{};

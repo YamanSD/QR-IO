@@ -48,6 +48,18 @@ namespace qr_io {
          *      Their order remains intact.
          */
         void appendBits(int, int);
+
+        /*
+         * Pre-Conditions:
+         *      0 <= n <= 31,
+         *      value < 2 ^ n
+         * Post-Conditions:
+         *      Lower n bits of value appended into the buffer.
+         *      Their order remains intact.
+         *
+         * Overloaded for size_t
+         */
+        void appendBits(size_t, int);
     private:
         /*
          * Checks if 0 <= n <= 31, value < 2 ^ n.
@@ -55,6 +67,13 @@ namespace qr_io {
          *          Otherwise, std::domain_error is thrown
          */
         static void checkInput(int, int);
+
+        /*
+         * Checks if 0 <= n <= 31, value < 2 ^ n.
+         *          If true continue.
+         *          Otherwise, std::domain_error is thrown
+         */
+        static void checkInput(size_t, int);
     };
 
     /*

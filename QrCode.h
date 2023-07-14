@@ -32,7 +32,7 @@
 
 
 namespace qr_io {
-    typedef std::vector<std::vector<bool>> matrix;
+    typedef std::vector<std::vector<bool>> Matrix;
 
     /*
      * Error correction levels.
@@ -45,10 +45,10 @@ namespace qr_io {
      * Based on the levels in the standard.
      */
     enum class Ecc {
-        L = 0,
-        M = 1,
-        Q = 2,
-        H = 3,
+        L = 1,
+        M = 0,
+        Q = 3,
+        H = 2,
     };
 
     /*
@@ -60,16 +60,6 @@ namespace qr_io {
      */
     class QrCode final {
     public:
-        [[nodiscard]] bool getModule(int, int) const;
-
-        [[nodiscard]] int getMask() const;
-
-        [[nodiscard]] Ecc getErrorCorrectionLevel() const;
-
-        [[nodiscard]] int getSize() const;
-
-        [[nodiscard]] int getVersion() const;
-
         QrCode(int, Ecc, const std::vector<int>&, int);
 
         QrCode(const std::vector<QrSegment>&, Ecc,
@@ -82,13 +72,23 @@ namespace qr_io {
 
         QrCode(const std::string&, Ecc);
 
-        [[nodiscard]] int getFormatBits(Ecc);
+        [[nodiscard]] bool getModule(int, int) const;
+
+        [[nodiscard]] int getMask() const;
+
+        [[nodiscard]] Ecc getErrorCorrectionLevel() const;
+
+        [[nodiscard]] int getSize() const;
+
+        [[nodiscard]] int getVersion() const;
+
+        [[nodiscard]] int getFormatBits() const;
 
         static std::vector<QrSegment> makeSegments(const std::string&);
 
     private:
-        static const int N1_PENALTY{3}, N2_PENALTY{3},
-                            N3_PENALTY{40}, N4_PENALTY{10};
+        static const int PENALTY_N1{3}, PENALTY_N2{3},
+                        PENALTY_N3{40}, PENALTY_N4{10};
 
         static const int MIN_VERSION{1}, MAX_VERSION{40};
 
@@ -96,16 +96,30 @@ namespace qr_io {
         int mask;
         int size;
         int version;
-        matrix modules;
-        matrix isFunction;
+        Matrix modules;
+        Matrix isFunction;
+
+        void checkVersion() const;
+
+        void checkMask() const;
+
+        static void checkVersionBounds(int, int) ;
+
+        [[nodiscard]] int getEccIndex() const;
+
+        [[nodiscard]] static int getEccIndex(Ecc);
 
         [[nodiscard]] int getEccNumber() const;
 
         [[nodiscard]] int getEccsPerBlock(int) const;
 
+        [[nodiscard]] static int getEccsPerBlock(int, Ecc);
+
         [[nodiscard]] int getErrCorrectionPerBlock(int) const;
 
-        [[nodiscard]] bool getBit(long n, int i) const;
+        [[nodiscard]] static int getErrCorrectionPerBlock(int, Ecc);
+
+        [[nodiscard]] static bool getBit(long n, int i) ;
 
         void finderPenaltyAddHistory(int, std::array<int, 7>&) const;
 
@@ -113,16 +127,18 @@ namespace qr_io {
 
         [[nodiscard]] int finderPenaltyCountPatterns(const std::array<int, 7>&) const;
 
-        [[nodiscard]] int reedSolomonMultiply(int x, int y);
+        [[nodiscard]] static int reedSolomonMultiply(int x, int y);
 
-        [[nodiscard]] std::vector<int> reedSolomonComputeRemainder(const std::vector<int>&,
+        [[nodiscard]] static std::vector<int> reedSolomonComputeRemainder(const std::vector<int>&,
                                                                     const std::vector<int>&);
 
-        [[nodiscard]] std::vector<int> reedSolomonComputeDivisor(int);
+        [[nodiscard]] static std::vector<int> reedSolomonComputeDivisor(int);
 
-        [[nodiscard]] int getNumDataCodewords(int, Ecc);
+        [[nodiscard]] int getNumDataCodewords(int) const;
 
-        [[nodiscard]] int getNumRawDataModules(int);
+        [[nodiscard]] static int getNumDataCodewords(int, Ecc);
+
+        [[nodiscard]] static int getNumRawDataModules(int);
 
         [[nodiscard]] std::vector<int> getAlignmentPatternPositions() const;
 
