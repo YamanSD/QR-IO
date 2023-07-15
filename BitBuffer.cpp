@@ -77,9 +77,9 @@ namespace qr_io {
         /*
          * Checks if n is less than 0,
          * then if n is greater than 31,
-         * then if 2 ^ n <= value (i.e. if value has a set 32nd bit)
+         * then if 2 ^ n <= value
          */
-        if (n < 0 or 31 < n or value >> n) {
+        if (n < 0 or 31 < n or (1 << n) <= value) {
             throw domain_error(
                     "\n0 <= n <= 31, value < 2 ^ n;\n"
                     "but n = (" + to_string(n) + ") "

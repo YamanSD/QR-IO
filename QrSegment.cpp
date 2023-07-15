@@ -27,7 +27,7 @@
 #include <utility>
 #include <vector>
 
-#include "Mode.h"
+#include "../../../Desktop/QR-IO-main 2/Mode.h"
 #include "QrSegment.h"
 
 
@@ -172,7 +172,7 @@ namespace qr_io {
         bool isNumeric{true};
 
         for (auto c: str) {
-            if (not validAlphanumeric(c)) {
+            if (validAlphanumeric(c) == -1) {
                 return ModeType::BYTE;
             }
 

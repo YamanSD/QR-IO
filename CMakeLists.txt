@@ -16,12 +16,12 @@ add_executable(
         main.cpp
         BitBuffer.cpp
         BitBuffer.h
-        QrCode.cpp
-        QrCode.h
-        QrSegment.cpp
-        QrSegment.h
         Mode.cpp
         Mode.h
+        QrSegment.h
+        QrSegment.cpp
+        QrCode.h
+        QrCode.cpp
 )
 
 # Link against OpenCV libraries

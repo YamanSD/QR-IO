@@ -86,11 +86,11 @@ namespace qr_io {
 
         static std::vector<QrSegment> makeSegments(const std::string&);
 
+        static const int MIN_VERSION{1}, MAX_VERSION{40};
+
     private:
         static const int PENALTY_N1{3}, PENALTY_N2{3},
                         PENALTY_N3{40}, PENALTY_N4{10};
-
-        static const int MIN_VERSION{1}, MAX_VERSION{40};
 
         Ecc ecc_level;
         int mask;

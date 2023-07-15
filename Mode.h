@@ -52,7 +52,7 @@ namespace qr_io {
          * Post-Conditions:
          *      Mode instance is created, mode has the given ModeType value.
          */
-        Mode(ModeType);
+        explicit Mode(ModeType);
 
         /*
          * Pre-Conditions:

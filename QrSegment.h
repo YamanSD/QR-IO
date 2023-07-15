@@ -27,8 +27,8 @@
 #include <string>
 #include <vector>
 
-#include "BitBuffer.h"
-#include "Mode.h"
+#include "../../../Desktop/QR-IO-main 2/BitBuffer.h"
+#include "../../../Desktop/QR-IO-main 2/Mode.h"
 
 
 namespace qr_io {

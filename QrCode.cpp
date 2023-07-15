@@ -40,7 +40,9 @@ namespace qr_io {
 
     QrCode::QrCode(int version, Ecc level, const vector<int>& data, int mask):
     version{version}, ecc_level{level}, mask{mask},
-    size{4 * version + 17}, modules(size), isFunction(size) {
+    size{4 * version + 17},
+    modules(size, vector<bool>(size)),
+    isFunction(size, vector<bool>(size)) {
         checkVersion();
         checkMask();
 
@@ -368,8 +370,9 @@ namespace qr_io {
     }
 
     void QrCode::setFunctionModule(int x, int y, bool isDark) {
-        size_t ux = static_cast<size_t>(x);
-        size_t uy = static_cast<size_t>(y);
+        auto ux = static_cast<size_t>(x);
+        auto uy = static_cast<size_t>(y);
+
         modules.at(uy).at(ux) = isDark;
         isFunction.at(uy).at(ux) = true;
     }
