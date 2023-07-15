@@ -13,16 +13,7 @@ include_directories(.)
 
 add_executable(
         QR_IO
-        main.cpp
-        BitBuffer.cpp
-        BitBuffer.h
-        Mode.cpp
-        Mode.h
-        QrSegment.h
-        QrSegment.cpp
-        QrCode.h
-        QrCode.cpp
-)
+        main.cpp)
 
 # Link against OpenCV libraries
 target_link_libraries(QR_IO ${OpenCV_LIBS})
