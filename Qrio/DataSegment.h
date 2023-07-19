@@ -58,6 +58,18 @@ namespace Qrio {
 
         /*
          * Pre-Conditions:
+         *      Constant reference to a DataSegment
+         *
+         * Post-Conditions:
+         *      data refers to the given data string,
+         *      start equals the given start index,
+         *      end equals the given end index,
+         *      Designator refers to the given designator.
+         */
+        explicit DataSegment(const DataSegment&);
+
+        /*
+         * Pre-Conditions:
          *      None.
          *
          * Post-Conditions:
@@ -97,6 +109,15 @@ namespace Qrio {
          *      None.
          *
          * Post-Conditions:
+         *      Returns type bits.
+         */
+        [[nodiscard]] int getTypeBits() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
          *      Returns a constant reference to the substring
          *      represented by [start, end[ in the data string.
          */
@@ -128,6 +149,25 @@ namespace Qrio {
          *      Returns a const iterator to the end of the substring.
          */
         [[nodiscard]] std::wstring::const_iterator end() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the size of the data.
+         */
+        [[nodiscard]] size_t size() const;
+
+        /*
+         * Pre-Conditions:
+         *      Start index,
+         *      size of the substring.
+         *
+         * Post-Conditions:
+         *      Returns a substring from [start, end[
+         */
+        [[nodiscard]] std::wstring substr(size_t, size_t) const;
     private:
         /* Data string */
         const std::wstring& data;

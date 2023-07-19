@@ -49,23 +49,26 @@ namespace Qrio {
      * Initializes the data members.
      * Fills the segments with the optimal DataSegments.
      */
-    DataAnalyzer::DataAnalyzer(wstring data_cpy, int version, Designator override_mode, Ecl ecl,
+    DataAnalyzer::DataAnalyzer(wstring data_cpy, int version, Ecl ecl, Designator override_mode,
                                unordered_map<size_t, int> eci):
     version{version}, data{move(data_cpy)}, ecl{ecl}, eci{move(eci)} {
         checkVersion();
         checkOverrideMode(override_mode);
 
         if (override_mode == Designator::NUMERIC or isNumeric(data)) {
-            push_back(DataSegment(data, 0, data.size(), Designator::NUMERIC));
+            push_back(DataSegment{data, 0, data.size(), Designator::NUMERIC});
             return;
         } else if (override_mode == Designator::ALPHANUMERIC or isAlphanumeric(data)) {
-            push_back(DataSegment(data, 0, data.size(), Designator::ALPHANUMERIC));
+            push_back(DataSegment{data, 0, data.size(), Designator::ALPHANUMERIC});
             return;
         } else if (override_mode == Designator::KANJI or isKanji(data)) {
-            push_back(DataSegment(data, 0, data.size(), Designator::KANJI));
+            push_back(DataSegment{data, 0, data.size(), Designator::KANJI});
             return;
         } else if (override_mode == Designator::BYTE or isByte(data)) {
-            push_back(DataSegment(data, 0, data.size(), Designator::BYTE));
+            push_back(DataSegment{data, 0, data.size(), Designator::BYTE});
+            return;
+        } else if (override_mode != Designator::TERMINATOR) {
+            push_back(DataSegment{data, 0, data.size(), override_mode});
             return;
         }
 
@@ -90,8 +93,8 @@ namespace Qrio {
                 }
 
                 if (switched) {
-                    push_back(DataSegment(data, left,
-                                          current, Designator::NUMERIC));
+                    push_back(DataSegment{data, left,
+                                          current, Designator::NUMERIC});
                     left = current;
                 }
             } else if (current_mode == Designator::ALPHANUMERIC) {
@@ -111,8 +114,8 @@ namespace Qrio {
                 }
 
                 if (switched) {
-                    push_back(DataSegment(data, left,
-                                          current, Designator::ALPHANUMERIC));
+                    push_back(DataSegment{data, left,
+                                          current, Designator::ALPHANUMERIC});
                     left = current;
                 }
             } else { // Kanji and Byte
@@ -142,9 +145,9 @@ namespace Qrio {
                 }
 
                 if (switched) {
-                    push_back(DataSegment(data, left,
+                    push_back(DataSegment{data, left,
                                           current, was_kanji ? Designator::KANJI
-                                                             : Designator::BYTE));
+                                                             : Designator::BYTE});
                     left = current;
                 }
             }
@@ -153,7 +156,7 @@ namespace Qrio {
         }
 
         if (left < n) {
-            push_back(DataSegment(data, left, current, current_mode));
+            push_back(DataSegment{data, left, current, current_mode});
         }
     }
 
@@ -173,13 +176,13 @@ namespace Qrio {
      * Check Annex J.
      */
     DataAnalyzer::DataAnalyzer(const string& data_cpy, int version,
-                               Designator override_mode, Ecl ecl,
+                               Ecl ecl, Designator override_mode,
                                const unordered_map<size_t, int>& eci):
     DataAnalyzer(
             move(wstring().assign(data_cpy.begin(), data_cpy.end())),
             version,
-            override_mode,
             ecl,
+            override_mode,
             eci) {}
 
     /*
@@ -606,7 +609,7 @@ namespace Qrio {
                     }
                     break;
                 default:
-                    throw range_error("Invalid override mode");
+                    return;
             }
         }
     }

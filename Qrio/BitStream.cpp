@@ -26,7 +26,8 @@
 
 namespace Qrio {
     using std::domain_error, std::endl,
-            std::ostream, std::to_string;
+            std::ostream, std::to_string,
+            std::wstring, std::stoi;
 
     /*
      * Pre-Conditions:
@@ -44,7 +45,7 @@ namespace Qrio {
 
         /* Append bit by bit from n-th bit to the 0-th bit */
         for (int i{0}; i < n; i++) {
-            push_back(value & (1 << (n - i)));
+            push_back(value & (1 << (n - i - 1)));
         }
     }
 
@@ -65,6 +66,18 @@ namespace Qrio {
                     "but n = (" + to_string(n) + ") "
                     "& value = (" + to_string(value) + ")\n");
         }
+    }
+
+    /*
+     * Pre-Conditions:
+     *      0 <= n <= 31,
+     *      value < 2 ^ n
+     * Post-Conditions:
+     *      Lower n bits of value appended into the buffer.
+     *      Their order remains intact.
+     */
+    void BitStream::appendBits(const wstring& value, size_t n) {
+        appendBits(stoi(value), n);
     }
 
     /*

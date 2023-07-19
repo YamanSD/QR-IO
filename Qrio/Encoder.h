@@ -38,8 +38,11 @@ namespace Qrio {
      * & Annex I of ISO/IEC 18004:2015.
      * Responsible for Step 2 of the encoding procedure.
      */
-    class Encoder final {
+    class Encoder final: public BitStream {
     public:
+        /* Data analyzer from the previous layer */
+        DataAnalyzer analyzer;
+
         /*
          * Pre-Conditions:
          *      Constant reference to DataAnalyzer of the data.
@@ -48,36 +51,22 @@ namespace Qrio {
          *      buffer contains the encoded contents of the DataSegments
          *      in the DataAnalyzer.
          */
-        explicit Encoder(const DataAnalyzer&);
-
-        /*
-         * Pre-Conditions:
-         *      None.
-         *
-         * Post-Conditions:
-         *      Returns a const iterator to the start of the bit stream.
-         */
-        [[nodiscard]] BitStream::const_iterator& begin() const;
-
-        /*
-         * Pre-Conditions:
-         *      None.
-         *
-         * Post-Conditions:
-         *      Returns a const iterator to the end of the bit stream.
-         */
-        [[nodiscard]] BitStream::const_iterator& end() const;
-
-        /*
-         * Pre-Conditions:
-         *      Index of the bit in the stream.
-         *
-         * Post-Conditions:
-         *      Returns a const reference to the bool at the given index.
-         */
-        [[nodiscard]] const bool& operator[](size_t) const;
+        explicit Encoder(DataAnalyzer&);
     private:
-        BitStream stream;
+        /*
+         * Table for the number of bits in character count indicator for
+         * QR code.
+         * Each row represents a mode indicator;
+         * each column represents a range of versions.
+         *
+         * Based on Table 3 of ISO/IEC 18004:2015 page 23.
+         */
+        constexpr static int countBitLengthTable[4][3] {
+            {10, 12, 14},   // Numeric
+            {9, 11, 13},    // Alphanumeric
+            {8, 16, 16},    // Byte
+            {8, 10, 12},    // Kanji
+        };
 
         /*
          * Pre-Conditions:
@@ -87,7 +76,7 @@ namespace Qrio {
          *      Encodes the contents of the DataSegment into binary form,
          *      bits are then appended to the bit stream.
          */
-        [[nodiscard]] static int encode(const DataSegment&);
+        void encode(const DataSegment&);
 
         /*
          * Pre-Conditions:
@@ -97,7 +86,7 @@ namespace Qrio {
          *      Encodes the contents of the DataSegment into binary form,
          *      bits are then appended to the bit stream, in Numeric form.
          */
-        [[nodiscard]] static int encodeNumeric(const DataSegment&);
+        void encodeNumeric(const DataSegment&);
 
         /*
          * Pre-Conditions:
@@ -107,7 +96,7 @@ namespace Qrio {
          *      Encodes the contents of the DataSegment into binary form,
          *      bits are then appended to the bit stream, in Alphanumeric form.
          */
-        [[nodiscard]] static int encodeAlpha(const DataSegment&);
+        void encodeAlpha(const DataSegment&);
 
         /*
          * Pre-Conditions:
@@ -117,7 +106,7 @@ namespace Qrio {
          *      Encodes the contents of the DataSegment into binary form,
          *      bits are then appended to the bit stream, in Byte form.
          */
-        [[nodiscard]] static int encodeByte(const DataSegment&);
+        void encodeByte(const DataSegment&);
 
         /*
          * Pre-Conditions:
@@ -127,7 +116,7 @@ namespace Qrio {
          *      Encodes the contents of the DataSegment into binary form,
          *      bits are then appended to the bit stream, in Kenji form.
          */
-        [[nodiscard]] static int encodeKenji(const DataSegment&);
+        void encodeKenji(const DataSegment&);
 
         /*
          * Pre-Conditions:
@@ -137,7 +126,48 @@ namespace Qrio {
          *      Encodes the contents of the DataSegment into binary form,
          *      bits are then appended to the bit stream, in ECI form.
          */
-        [[nodiscard]] static int encodeEci(const DataSegment&);
+        void encodeEci(const DataSegment&, size_t, int);
+
+        /*
+         * Pre-Conditions:
+         *      None
+         *
+         * Post-Conditions:
+         *      Returns the index of the modeType in the countBitLengthTable.
+         */
+        [[nodiscard]] static int getBitLengthIndex(Designator);
+
+        /*
+         * Pre-Conditions:
+         *      None
+         *
+         * Post-Conditions:
+         *      Returns the index of the version in the countBitLengthTable.
+         */
+        [[nodiscard]] static int getVersionIndex(int);
+
+        /*
+         * Pre-Conditions:
+         *      mode is Designator::ECI,
+         *      given ECI assignment value is in [0, 999'999].
+         *
+         * Post-Conditions
+         *      Returns the ECI designator for the given integer.
+         *      Either 8, 16, or 24.
+         *
+         * Based on Table 4 of ISO/IEC 18004:2015 page 24.
+         */
+        [[nodiscard]] static long getEciDesignator(long);
+
+        /*
+         * Pre-Conditions:
+         *      Version of the QrSymbol guaranteed in [1, 40].
+         *
+         * Post-Conditions:
+         *      Returns the number of bits in the character count indicator
+         *      for a QR code, based on the given version & mode type.
+         */
+        [[nodiscard]] static int getCountBitLength(int, Designator);
     };
 }
 

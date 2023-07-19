@@ -37,7 +37,7 @@ namespace Qrio {
      * Used to store bits dynamically.
      * Inherits from a std::vector<bool>.
      */
-    class BitStream final: public std::vector<bool>  {
+    class BitStream : public std::vector<bool>  {
     public:
         /*
          * Pre-Conditions:
@@ -48,6 +48,16 @@ namespace Qrio {
          *      Their order remains intact.
          */
         void appendBits(int, size_t);
+
+        /*
+         * Pre-Conditions:
+         *      0 <= n <= 31,
+         *      value < 2 ^ n
+         * Post-Conditions:
+         *      Lower n bits of value appended into the buffer.
+         *      Their order remains intact.
+         */
+        void appendBits(const std::wstring&, size_t);
 
     private:
         /*

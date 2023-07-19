@@ -104,7 +104,7 @@ namespace Qrio {
      *      represented by [start, end[ in the data wstring.
      */
     wstring DataSegment::getDataSegment() const {
-        return data.substr(start_index, end_index - start_index);
+        return data.substr(start_index, size());
     }
 
     /*
@@ -139,4 +139,52 @@ namespace Qrio {
     wstring::const_iterator DataSegment::end() const {
         return data.begin() + static_cast<long>(end_index);
     }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Returns the size of the data.
+     */
+    size_t DataSegment::size() const {
+        return getEnd() - getStart();
+    }
+
+    /*
+     * Pre-Conditions:
+     *      Start index,
+     *      end index.
+     *
+     * Post-Conditions:
+     *      Returns a substring from [start, end[
+     */
+    std::wstring DataSegment::substr(size_t start, size_t size) const {
+        return getData().substr(getStart() + start, size);
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Returns type bits.
+     */
+    int DataSegment::getTypeBits() const {
+        return static_cast<int>(mode);
+    }
+
+    /*
+     * Pre-Conditions:
+     *      Constant reference to a DataSegment
+     *
+     * Post-Conditions:
+     *      data refers to the given data string,
+     *      start equals the given start index,
+     *      end equals the given end index,
+     *      Designator refers to the given designator.
+     */
+    DataSegment::DataSegment(const DataSegment& other):
+    DataSegment(other.getData(), other.getStart(),
+                other.getEnd(), other.getType()) {}
 }

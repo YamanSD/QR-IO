@@ -110,8 +110,8 @@ namespace Qrio {
          */
         explicit DataAnalyzer(std::wstring,
                               int,
-                              Designator override_mode = Designator::TERMINATOR,
                               Ecl ecl = Ecl::L,
+                              Designator override_mode = Designator::TERMINATOR,
                               std::unordered_map<size_t, int> eci = {});
 
         /*
@@ -128,8 +128,8 @@ namespace Qrio {
          * Fills the segments with the optimal DataSegments.
          */
         explicit DataAnalyzer(const std::string&, int,
-                              Designator override_mode = Designator::TERMINATOR,
                               Ecl ecl = Ecl::L,
+                              Designator override_mode = Designator::TERMINATOR,
                               const std::unordered_map<size_t, int>& eci = {});
 
         /*

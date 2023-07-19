@@ -22,6 +22,7 @@
  */
 
 #include <Qrio/DataAnalyzer.h>
+#include <Qrio/Encoder.h>
 #include <iostream>
 #include <string>
 
@@ -29,13 +30,13 @@ using namespace std;
 using namespace Qrio;
 
 int main() {
-    const string t{"012345AVC1234567890123ABab"};
-    wstring j{L"\u0035\u1002\u0FC0\u0AED\u0AD7"
-              "\u015C\u0147\u0129\u0059\u01BD"
-              "\u018D\u018A\u0036\u0141\u0144"
-              "\u0001\u0000\u0249\u0240\u0249"
-              "\u0000\u0104\u0105\u0113\u0115"
-              "\u0000\u0208\u01FF\u0008"};
+    const string t{"01234567"};
+//    wstring j{L"\u0035\u1002\u0FC0\u0AED\u0AD7"
+//              "\u015C\u0147\u0129\u0059\u01BD"
+//              "\u018D\u018A\u0036\u0141\u0144"
+//              "\u0001\u0000\u0249\u0240\u0249"
+//              "\u0000\u0104\u0105\u0113\u0115"
+//              "\u0000\u0208\u01FF\u0008"};
 //    cout << j.size() << endl;
 //
 //    for (auto c: j) {
@@ -51,10 +52,19 @@ int main() {
 //    }
 //
 //    cout << endl;
+
 ////
-    for (auto c: DataAnalyzer(t, 20)) {
-        cout << c.getDataSegment().size() << " & " << ((int)c.getType()) << endl;
+auto w = DataAnalyzer(t, 1, Ecl::H);
+
+cout << w.size() << endl;
+cout << w[0].getTypeBits() << endl;
+
+const auto& temp = Encoder(w);
+    for (auto b: temp) {
+        cout << b;
     }
+
+    cout << endl;
 //    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 //
 //    // Read the C++ string containing Japanese characters
