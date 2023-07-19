@@ -25,6 +25,7 @@
 #define QR_IO_DATAANALYZER_H
 
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "DataSegment.h"
@@ -34,7 +35,7 @@
 
 namespace Qrio {
     /*
-     * DataAnalyzer: 1.0
+     * DataAnalyzer: 1.5.4
      *
      * Divides the given data string into DataSegments in the most optimal way.
      * The optimization is based on Annex J of ISO/IEC 18004:2015 page 99.
@@ -107,7 +108,11 @@ namespace Qrio {
          * Initializes the data members.
          * Fills the segments with the optimal DataSegments.
          */
-        explicit DataAnalyzer(std::wstring, int, Ecl ecl = Ecl::L);
+        explicit DataAnalyzer(std::wstring,
+                              int,
+                              Designator override_mode = Designator::TERMINATOR,
+                              Ecl ecl = Ecl::L,
+                              std::unordered_map<size_t, int> eci = {});
 
         /*
          * Pre-Conditions:
@@ -122,7 +127,10 @@ namespace Qrio {
          * Initializes the data members.
          * Fills the segments with the optimal DataSegments.
          */
-        explicit DataAnalyzer(const std::string&, int, Ecl ecl = Ecl::L);
+        explicit DataAnalyzer(const std::string&, int,
+                              Designator override_mode = Designator::TERMINATOR,
+                              Ecl ecl = Ecl::L,
+                              const std::unordered_map<size_t, int>& eci = {});
 
         /*
          * Pre-Conditions:
@@ -150,7 +158,24 @@ namespace Qrio {
          *      Returns the chosen ECL.
          */
         [[nodiscard]] Ecl getEcl() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the given ECI.
+         */
+        [[nodiscard]] std::unordered_map<size_t, int>& getEci();
     private:
+        /*
+         * Map of ECIs to be placed in the encoding.
+         * Each key is an index, & each value is the ECI value.
+         * Automatic detection of ECIs is not feasible, due to the lack of the]
+         * AIM ECI standard that covers that information.
+         */
+        std::unordered_map<size_t, int> eci;
+
         /* Version of the QR code */
         int version;
 
@@ -188,7 +213,7 @@ namespace Qrio {
          * Post-Conditions:
          *      Returns true if the given wchar_t is byte.
          */
-        [[nodiscard]] inline static bool isByte(long);
+        [[nodiscard]] inline static bool isByte(wchar_t);
 
         /*
          * Pre-Conditions:
@@ -316,12 +341,49 @@ namespace Qrio {
 
         /*
          * Pre-Conditions:
-         *      None.
+         *      Data initialized.
          *
          * Post-Conditions:
          *      Throws a domain exception if the version is out of bounds.
          */
         void checkVersion() const;
+
+        /*
+         * Pre-Conditions:
+         *      Data initialized.
+         *
+         * Post-Conditions:
+         *      Throws a range error if the given designator is
+         *      invalid with the data.
+         */
+        void checkOverrideMode(Designator override_mode) const;
+
+        /*
+         * Pre-Conditions:
+         *      Data string.
+         *
+         * Post-Conditions:
+         *      Returns true if the given data can be encoded in alphanumeric mode.
+         */
+        [[nodiscard]] static bool isCompatibleAlphanumeric(const std::wstring&);
+
+        /*
+         * Pre-Conditions:
+         *      Data string.
+         *
+         * Post-Conditions:
+         *      Returns true if the given data can be encoded in Byte mode.
+         */
+        [[nodiscard]] static bool isCompatibleByte(const std::wstring&);
+
+        /*
+         * Pre-Conditions:
+         *      Data string.
+         *
+         * Post-Conditions:
+         *      Returns true if the given data can be encoded in Kanji mode.
+         */
+        [[nodiscard]] static bool isCompatibleKanji(const std::wstring&);
     };
 }
 

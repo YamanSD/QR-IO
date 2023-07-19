@@ -22,6 +22,7 @@
  */
 
 #include <algorithm>
+#include <unordered_map>
 #include <utility>
 #include <stdexcept>
 #include <vector>
@@ -31,8 +32,9 @@
 
 
 namespace Qrio {
-    using std::domain_error, std::min, std::move,
-            std::string, std::vector, std::wstring;
+    using std::domain_error, std::all_of, std::min, std::move,
+            std::unordered_map, std::string, std::vector, std::wstring,
+            std::range_error;
 
     /*
      * Pre-Conditions:
@@ -47,20 +49,22 @@ namespace Qrio {
      * Initializes the data members.
      * Fills the segments with the optimal DataSegments.
      */
-    DataAnalyzer::DataAnalyzer(wstring data_cpy, int version, Ecl ecl):
-    version{version}, data{move(data_cpy)}, ecl{ecl} {
+    DataAnalyzer::DataAnalyzer(wstring data_cpy, int version, Designator override_mode, Ecl ecl,
+                               unordered_map<size_t, int> eci):
+    version{version}, data{move(data_cpy)}, ecl{ecl}, eci{move(eci)} {
         checkVersion();
+        checkOverrideMode(override_mode);
 
-        if (isNumeric(data)) {
+        if (override_mode == Designator::NUMERIC or isNumeric(data)) {
             push_back(DataSegment(data, 0, data.size(), Designator::NUMERIC));
             return;
-        } else if (isAlphanumeric(data)) {
+        } else if (override_mode == Designator::ALPHANUMERIC or isAlphanumeric(data)) {
             push_back(DataSegment(data, 0, data.size(), Designator::ALPHANUMERIC));
             return;
-        } else if (isKanji(data)) {
+        } else if (override_mode == Designator::KANJI or isKanji(data)) {
             push_back(DataSegment(data, 0, data.size(), Designator::KANJI));
             return;
-        } else if (isByte(data)) {
+        } else if (override_mode == Designator::BYTE or isByte(data)) {
             push_back(DataSegment(data, 0, data.size(), Designator::BYTE));
             return;
         }
@@ -168,8 +172,15 @@ namespace Qrio {
      *
      * Check Annex J.
      */
-    DataAnalyzer::DataAnalyzer(const string& data_cpy, int version, Ecl ecl):
-            DataAnalyzer(move(wstring().assign(data_cpy.begin(), data_cpy.end())), version, ecl) {}
+    DataAnalyzer::DataAnalyzer(const string& data_cpy, int version,
+                               Designator override_mode, Ecl ecl,
+                               const unordered_map<size_t, int>& eci):
+    DataAnalyzer(
+            move(wstring().assign(data_cpy.begin(), data_cpy.end())),
+            version,
+            override_mode,
+            ecl,
+            eci) {}
 
     /*
      * Pre-Conditions:
@@ -210,7 +221,7 @@ namespace Qrio {
      *
      * Check Annex J.
      */
-    bool DataAnalyzer::isByte(long c) {
+    bool DataAnalyzer::isByte(wchar_t c) {
         return c == 0x2C
                 or (0x00 <= c and c <= 0x1F)
                 or (0x21 <= c and c <= 0x23)
@@ -316,13 +327,9 @@ namespace Qrio {
      *      Returns true if the given wstring consists exclusively of bytes.
      */
     bool DataAnalyzer::isByte(const wstring& data) {
-        for (size_t i{0}; i < data.size(); i++) {
-            if (not isByte(data[i])) {
-                return false;
-            }
-        }
-
-        return true;
+        return all_of(data.begin(), data.end(), [](auto c) {
+            return isByte(c);
+        });
     }
 
     /*
@@ -334,13 +341,9 @@ namespace Qrio {
      *      Returns true if the given wstring consists exclusively of numerics.
      */
     bool DataAnalyzer::isNumeric(const wstring& data) {
-        for (size_t i{0}; i < data.size(); i++) {
-            if (not isNumeric(data[i])) {
-                return false;
-            }
-        }
-
-        return true;
+        return all_of(data.begin(), data.end(), [](auto c) {
+            return isNumeric(c);
+        });
     }
 
     /*
@@ -352,13 +355,9 @@ namespace Qrio {
      *      Returns true if the given wstring consists exclusively of alphanumerics.
      */
     bool DataAnalyzer::isAlphanumeric(const wstring& data) {
-        for (size_t i{0}; i < data.size(); i++) {
-            if (not isAlphanumeric(data[i])) {
-                return false;
-            }
-        }
-
-        return true;
+        return all_of(data.begin(), data.end(), [](auto c) {
+            return isAlphanumeric(c);
+        });
     }
 
     /*
@@ -476,13 +475,9 @@ namespace Qrio {
      *      Returns true if the given wstring consists exclusively of Kanji characters.
      */
     bool DataAnalyzer::isKanji(const wstring& data) {
-        for (size_t i{0}; i < data.size(); i++) {
-            if (not isKanji(data[i])) {
-                return false;
-            }
-        }
-
-        return true;
+        return all_of(data.begin(), data.end(), [](auto c) {
+            return isKanji(c);
+        });
     }
 
     /*
@@ -520,6 +515,17 @@ namespace Qrio {
 
     /*
      * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Returns the given ECI.
+     */
+    unordered_map<size_t, int>& DataAnalyzer::getEci() {
+        return eci;
+    }
+
+    /*
+     * Pre-Conditions:
      *      A character c.
      *
      * Post-Conditions:
@@ -527,5 +533,81 @@ namespace Qrio {
      */
     bool DataAnalyzer::isKanji(wchar_t c) {
         return isKanji(c / (16 * 16), c % (16 * 16));
+    }
+
+    /*
+     * Pre-Conditions:
+     *      Data string.
+     *
+     * Post-Conditions:
+     *      Returns true if the given data can be encoded in alphanumeric mode.
+     */
+    bool DataAnalyzer::isCompatibleAlphanumeric(const wstring& data) {
+        return all_of(data.begin(), data.end(), [](auto c) {
+            return isNumeric(c) or isAlphanumeric(c);
+        });
+    }
+
+    /*
+     * Pre-Conditions:
+     *      Data string.
+     *
+     * Post-Conditions:
+     *      Returns true if the given data can be encoded in Byte mode.
+     */
+    bool DataAnalyzer::isCompatibleByte(const wstring& data) {
+        return all_of(data.begin(), data.end(), [](auto c) {
+            return isNumeric(c) or isAlphanumeric(c) or isByte(c);
+        });
+    }
+
+    /*
+     * Pre-Conditions:
+     *      Data string.
+     *
+     * Post-Conditions:
+     *      Returns true if the given data can be encoded in Kanji mode.
+     */
+    bool DataAnalyzer::isCompatibleKanji(const wstring& data) {
+        return all_of(data.begin(), data.end(), [](auto c) {
+            return isNumeric(c) or isAlphanumeric(c) or isByte(c) or isKanji(c);
+        });
+    }
+
+    /*
+     * Pre-Conditions:
+     *      Data initialized.
+     *
+     * Post-Conditions:
+     *      Throws a range error if the given designator is
+     *      invalid with the data.
+     */
+    void DataAnalyzer::checkOverrideMode(Designator override_mode) const {
+        if (override_mode != Designator::TERMINATOR) {
+            switch (override_mode) {
+                case Designator::NUMERIC:
+                    if (not isNumeric(data)) {
+                        throw range_error("Invalid override mode");
+                    }
+                    break;
+                case Designator::ALPHANUMERIC:
+                    if (not isCompatibleAlphanumeric(data)) {
+                        throw range_error("Invalid override mode");
+                    }
+                    break;
+                case Designator::KANJI:
+                    if (not isCompatibleKanji(data)) {
+                        throw range_error("Invalid override mode");
+                    }
+                    break;
+                case Designator::BYTE:
+                    if (not isCompatibleByte(data)) {
+                        throw range_error("Invalid override mode");
+                    }
+                    break;
+                default:
+                    throw range_error("Invalid override mode");
+            }
+        }
     }
 }

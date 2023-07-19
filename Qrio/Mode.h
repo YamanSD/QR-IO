@@ -59,7 +59,7 @@ namespace Qrio {
          *
          * Based on Table 4 of ISO/IEC 18004:2015 page 24.
          */
-        [[nodiscard]] int getEciDesignator(long) const;
+        [[nodiscard]] static long getEciDesignator(long);
 
         /*
          * Pre-Conditions:
@@ -101,7 +101,16 @@ namespace Qrio {
          * Post-Conditions:
          *      Returns the index of the modeType in the countBitLengthTable.
          */
-        [[nodiscard]] int getBitLengthIndex(int) const;
+        [[nodiscard]] int getBitLengthIndex() const;
+
+        /*
+         * Pre-Conditions:
+         *      None
+         *
+         * Post-Conditions:
+         *      Returns the index of the version in the countBitLengthTable.
+         */
+        [[nodiscard]] static int getVersionIndex(int);
     };
 }
 
