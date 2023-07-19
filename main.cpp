@@ -21,7 +21,49 @@
  * SOFTWARE.
  */
 
+#include <Qrio/DataAnalyzer.h>
+#include <iostream>
+#include <string>
+
+using namespace std;
+using namespace Qrio;
 
 int main() {
+    const string t{"012345AVC1234567890123ABab"};
+//    cout << j.size() << endl;
+//
+//    for (auto c: j) {
+//        cout << hex << c << endl;
+//    }
+//    cout << hex << j[0] << endl;
+//    cout << hex << j[1] << endl;
+//    cout << j.data() << endl;
+//    cout << hex << j << endl;
 
+//    for (int i{0}; i < j.size(); i += 3) {
+//        cout << (j.substr(0, 3)) << ' ';
+//    }
+//
+//    cout << endl;
+////
+    for (auto c: DataAnalyzer(t, 20)) {
+        cout << c.getDataSegment().size() << " & " << ((int)c.getType()) << endl;
+    }
+//    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+//
+//    // Read the C++ string containing Japanese characters
+//    std::string inputString;
+//    std::cout << "Enter the C++ string containing Japanese characters: ";
+//    std::getline(std::cin, inputString);
+//
+//    // Convert the string to a UTF-16 encoded wide string
+//    std::wstring utf16String = converter.from_bytes(inputString);
+//
+//    // Print the UTF-16 encoded wide string (2 bytes per character)
+//    for (wchar_t c : utf16String) {
+//        std::wcout << std::hex << static_cast<unsigned>(c) << " ";
+//    }
+//    std::wcout << std::endl;
+//
+//    return 0;
 }

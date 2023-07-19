@@ -13,7 +13,7 @@ include_directories(.)
 
 add_executable(
         QR_IO
-        main.cpp)
+        main.cpp Qrio/BitStream.cpp Qrio/BitStream.h Qrio/SquareMatrix.cpp Qrio/SquareMatrix.h Qrio/Mode.cpp Qrio/Mode.h Qrio/Designator.h Qrio/DataAnalyzer.cpp Qrio/DataAnalyzer.h Qrio/DataSegment.cpp Qrio/DataSegment.h Qrio/Encoder.cpp Qrio/Encoder.h Qrio/ErrorCorrectionEncoder.cpp Qrio/ErrorCorrectionEncoder.h Qrio/Structurer.cpp Qrio/Structurer.h Qrio/Ecl.h)
 
 # Link against OpenCV libraries
 target_link_libraries(QR_IO ${OpenCV_LIBS})
