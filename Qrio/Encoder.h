@@ -33,7 +33,7 @@
 
 namespace Qrio {
     /*
-     * Encoder: 1.0
+     * Encoder: 1.5.3
      *
      * Encodes the DataSegments in the DataAnalyzer into a BitStream.
      * Encoding is done based on section 7, Annex H,
