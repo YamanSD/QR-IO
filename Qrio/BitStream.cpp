@@ -27,7 +27,7 @@
 namespace Qrio {
     using std::domain_error, std::endl,
             std::ostream, std::to_string,
-            std::wstring, std::stoi;
+            std::wstring, std::stol;
 
     /*
      * Pre-Conditions:
@@ -39,7 +39,7 @@ namespace Qrio {
      *
      * Assertion is performed by the checkInput function.
      */
-    void BitStream::appendBits(int value, size_t n) {
+    void BitStream::appendBits(long value, size_t n) {
         /* Assert 0 <= n <= 31, value < 2 ^ n */
         checkInput(value, n);
 
@@ -54,7 +54,7 @@ namespace Qrio {
      *          If true continue.
      *          Otherwise, std::domain_error is thrown
      */
-    void BitStream::checkInput(int value, size_t n) {
+    void BitStream::checkInput(long value, size_t n) {
         /*
          * Checks if n is less than 0,
          * then if n is greater than 31,
@@ -77,7 +77,7 @@ namespace Qrio {
      *      Their order remains intact.
      */
     void BitStream::appendBits(const wstring& value, size_t n) {
-        appendBits(stoi(value), n);
+        appendBits(stol(value), n);
     }
 
     /*

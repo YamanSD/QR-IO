@@ -24,6 +24,8 @@
 #ifndef QR_IO_ENCODER_H
 #define QR_IO_ENCODER_H
 
+#include <utility>
+
 #include "BitStream.h"
 #include "DataAnalyzer.h"
 #include "DataSegment.h"
@@ -116,17 +118,17 @@ namespace Qrio {
          *      Encodes the contents of the DataSegment into binary form,
          *      bits are then appended to the bit stream, in Kenji form.
          */
-        void encodeKenji(const DataSegment&);
+        void encodeKanji(const DataSegment &data);
 
         /*
          * Pre-Conditions:
-         *      Constant reference to DataSegment.
+         *      Index of the ECI (based on the characters of the data).
          *
          * Post-Conditions:
          *      Encodes the contents of the DataSegment into binary form,
          *      bits are then appended to the bit stream, in ECI form.
          */
-        void encodeEci(const DataSegment&, size_t, int);
+        void encodeEci(size_t);
 
         /*
          * Pre-Conditions:
@@ -157,7 +159,7 @@ namespace Qrio {
          *
          * Based on Table 4 of ISO/IEC 18004:2015 page 24.
          */
-        [[nodiscard]] static long getEciDesignator(long);
+        [[nodiscard]] static std::pair<long, int> getEciDesignator(long);
 
         /*
          * Pre-Conditions:
@@ -168,6 +170,44 @@ namespace Qrio {
          *      for a QR code, based on the given version & mode type.
          */
         [[nodiscard]] static int getCountBitLength(int, Designator);
+
+        /*
+         * Pre-Conditions:
+         *      Constant reference to a data segment.
+         *
+         * Post-Conditions:
+         *      Encodes the mode type and the char count into the stream,
+         *      returns the size of the data.
+         */
+        [[nodiscard]] size_t encodeMode(const DataSegment&);
+
+        /*
+         * Pre-Conditions:
+         *      An alphanumeric character.
+         *
+         * Post-Conditions:
+         *      Returns the value of the given char.
+         */
+        [[nodiscard]] static int mapAlphanumericChar(wchar_t);
+
+        /*
+         * Pre-Conditions:
+         *      A byte character.
+         *
+         * Post-Conditions:
+         *      Returns the value of the given char.
+         */
+        [[nodiscard]] static int mapByteChar(wchar_t);
+
+        /*
+         * Pre-Conditions:
+         *      Data segment reference,
+         *      index to check.
+         *
+         * Post-Conditions:
+         *      If the given index has an ECI value, encode it.
+         */
+        void checkEci(const DataSegment&, size_t);
     };
 }
 

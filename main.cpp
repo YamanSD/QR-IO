@@ -31,6 +31,7 @@ using namespace Qrio;
 
 int main() {
     const string t{"01234567"};
+    wstring j{L"\ue4aa\u935fA"};
 //    wstring j{L"\u0035\u1002\u0FC0\u0AED\u0AD7"
 //              "\u015C\u0147\u0129\u0059\u01BD"
 //              "\u018D\u018A\u0036\u0141\u0144"
@@ -54,9 +55,12 @@ int main() {
 //    cout << endl;
 
 ////
-auto w = DataAnalyzer(t, 1, Ecl::H);
+
+
+auto w = DataAnalyzer(j, 1, Ecl::H, Designator::KANJI);
 
 cout << w.size() << endl;
+cout << w[0].size() << endl;
 cout << w[0].getTypeBits() << endl;
 
 const auto& temp = Encoder(w);

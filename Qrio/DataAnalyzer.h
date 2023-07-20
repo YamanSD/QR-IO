@@ -166,7 +166,7 @@ namespace Qrio {
          * Post-Conditions:
          *      Returns the given ECI.
          */
-        [[nodiscard]] std::unordered_map<size_t, int>& getEci();
+        [[nodiscard]] const std::unordered_map<size_t, int>& getEci() const;
     private:
         /*
          * Map of ECIs to be placed in the encoding.

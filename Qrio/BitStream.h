@@ -47,7 +47,7 @@ namespace Qrio {
          *      Lower n bits of value appended into the buffer.
          *      Their order remains intact.
          */
-        void appendBits(int, size_t);
+        void appendBits(long, size_t);
 
         /*
          * Pre-Conditions:
@@ -65,7 +65,7 @@ namespace Qrio {
          *          If true continue.
          *          Otherwise, std::domain_error is thrown
          */
-        static void checkInput(int, size_t);
+        static void checkInput(long, size_t);
     };
 
     /*

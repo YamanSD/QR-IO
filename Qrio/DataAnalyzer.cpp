@@ -523,7 +523,7 @@ namespace Qrio {
      * Post-Conditions:
      *      Returns the given ECI.
      */
-    unordered_map<size_t, int>& DataAnalyzer::getEci() {
+    const unordered_map<size_t, int>& DataAnalyzer::getEci() const {
         return eci;
     }
 
