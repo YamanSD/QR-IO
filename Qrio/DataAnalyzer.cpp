@@ -50,8 +50,9 @@ namespace Qrio {
      * Fills the segments with the optimal DataSegments.
      */
     DataAnalyzer::DataAnalyzer(wstring data_cpy, int version, Ecl ecl, Designator override_mode,
-                               unordered_map<size_t, int> eci):
-    version{version}, data{move(data_cpy)}, ecl{ecl}, eci{move(eci)} {
+                               unordered_map<size_t, int> eci, int fnc1):
+    version{version}, data{move(data_cpy)}, fnc1_value{fnc1},
+    ecl{ecl}, eci{move(eci)} {
         checkVersion();
         checkOverrideMode(override_mode);
 
@@ -177,13 +178,15 @@ namespace Qrio {
      */
     DataAnalyzer::DataAnalyzer(const string& data_cpy, int version,
                                Ecl ecl, Designator override_mode,
-                               const unordered_map<size_t, int>& eci):
+                               const unordered_map<size_t, int>& eci,
+                               int fnc1):
     DataAnalyzer(
             move(wstring().assign(data_cpy.begin(), data_cpy.end())),
             version,
             ecl,
             override_mode,
-            eci) {}
+            eci,
+            fnc1) {}
 
     /*
      * Pre-Conditions:
@@ -612,5 +615,47 @@ namespace Qrio {
                     return;
             }
         }
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Returns the index of the chosen ECL.
+     */
+    int DataAnalyzer::getEclIndex() const {
+        switch (ecl) {
+            case Ecl::L:
+                return 0;
+            case Ecl::M:
+                return 1;
+            case Ecl::Q:
+                return 2;
+            case Ecl::H:
+                return 3;
+        }
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Returns the EccPerBlock based on the data fields.
+     */
+    int DataAnalyzer::getEccPerBlock() const {
+        return EccPerBlock[getEclIndex()][getVersion()];
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Returns the number of EccBlocks based on the data fields.
+     */
+    int DataAnalyzer::getEccBlocksCount() const {
+        return NumberOfEccBlocks[getEclIndex()][getVersion()];
     }
 }

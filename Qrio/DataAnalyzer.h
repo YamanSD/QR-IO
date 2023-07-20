@@ -43,57 +43,8 @@ namespace Qrio {
      */
     class DataAnalyzer final: public std::vector<DataSegment> {
     public:
-        /* Based on table 9 page 38 */
-        const int EccPerBlock[4][41] = {
-                // Version: (note that index 0 is for padding, and is set to an illegal value)
-                {-1,  7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24,
-                 26, 30, 22, 24, 28, 30, 28, 28, 28, 28, 30, 30, 26,
-                 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
-                 30, 30},  // Low
-
-                {-1, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22,
-                 22, 24, 24, 28, 28, 26, 26, 26, 26, 28, 28, 28, 28,
-                 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,
-                 28, 28},  // Medium
-
-                {-1, 13, 22, 18, 26, 18, 24, 18, 22, 20, 24, 28, 26,
-                 24, 20, 30, 24, 28, 28, 26, 30, 28, 30, 30, 30, 30,
-                 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
-                 30, 30},  // Quartile
-
-                {-1, 17, 28, 22, 16, 22, 28, 26, 26, 24, 28, 24, 28,
-                 22, 24, 24, 30, 28, 28, 26, 28, 30, 24, 30, 30, 30,
-                 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
-                 30, 30},  // High
-        };
-
-        /* Based on table 9 page 38 */
-        const int NumberOfEccBlocks[4][41] = {
-                // Version: (note that index 0 is for padding, and is set to an illegal value)
-                {-1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4,
-                  4, 4, 4, 4, 6, 6, 6, 6, 7, 8, 8,
-                  9, 9, 10, 12, 12, 12, 13, 14, 15,
-                  16, 17, 18, 19, 19, 20, 21, 22, 24,
-                  25},  // Low
-
-                {-1, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5,
-                  5, 8, 9, 9, 10, 10, 11, 13, 14,
-                  16, 17, 17, 18, 20, 21, 23, 25,
-                  26, 28, 29, 31, 33, 35, 37, 38,
-                  40, 43, 45, 47, 49},  // Medium
-
-                {-1, 1, 1, 2, 2, 4, 4, 6, 6, 8, 8,
-                  8, 10, 12, 16, 12, 17, 16, 18, 21,
-                  20, 23, 23, 25, 27, 29, 34, 34, 35,
-                  38, 40, 43, 45, 48, 51, 53, 56, 59,
-                  62, 65, 68},  // Quartile
-
-                {-1, 1, 1, 2, 4, 4, 4, 5, 6, 8, 8,
-                  11, 11, 16, 16, 18, 16, 19, 21, 25,
-                  25, 25, 34, 30, 32, 35, 37, 40,
-                  42, 45, 48, 51, 54, 57, 60, 63,
-                  66, 70, 74, 77, 81},  // High
-        };
+        /* FNC1 value to be used */
+        const int fnc1_value;
 
         /*
          * Pre-Conditions:
@@ -107,12 +58,15 @@ namespace Qrio {
          *
          * Initializes the data members.
          * Fills the segments with the optimal DataSegments.
+         *
+         * When using FNC1, the % (0x1D) must be doubled by the user.
          */
         explicit DataAnalyzer(std::wstring,
                               int,
                               Ecl ecl = Ecl::L,
                               Designator override_mode = Designator::TERMINATOR,
-                              std::unordered_map<size_t, int> eci = {});
+                              std::unordered_map<size_t, int> eci = {},
+                              int fnc1 = 0);
 
         /*
          * Pre-Conditions:
@@ -130,7 +84,8 @@ namespace Qrio {
         explicit DataAnalyzer(const std::string&, int,
                               Ecl ecl = Ecl::L,
                               Designator override_mode = Designator::TERMINATOR,
-                              const std::unordered_map<size_t, int>& eci = {});
+                              const std::unordered_map<size_t, int>& eci = {},
+                              int fnc1 = 0);
 
         /*
          * Pre-Conditions:
@@ -164,10 +119,89 @@ namespace Qrio {
          *      None.
          *
          * Post-Conditions:
+         *      Returns the index of the chosen ECL.
+         */
+        [[nodiscard]] int getEclIndex() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
          *      Returns the given ECI.
          */
         [[nodiscard]] const std::unordered_map<size_t, int>& getEci() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the EccPerBlock based on the data fields.
+         */
+        [[nodiscard]] int getEccPerBlock() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the number of EccBlocks based on the data fields.
+         */
+        [[nodiscard]] int getEccBlocksCount() const;
     private:
+        /* Based on table 9 page 38 */
+        const int EccPerBlock[4][41] = {
+                // Version: (note that index 0 is for padding, and is set to an illegal value)
+                {-1,  7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24,
+                 26, 30, 22, 24, 28, 30, 28, 28, 28, 28, 30, 30, 26,
+                 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
+                 30, 30},  // Low
+
+                 {-1, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22,
+                  22, 24, 24, 28, 28, 26, 26, 26, 26, 28, 28, 28, 28,
+                  28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,
+                  28, 28},  // Medium
+
+                  {-1, 13, 22, 18, 26, 18, 24, 18, 22, 20, 24, 28, 26,
+                   24, 20, 30, 24, 28, 28, 26, 30, 28, 30, 30, 30, 30,
+                   28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
+                   30, 30},  // Quartile
+
+                   {-1, 17, 28, 22, 16, 22, 28, 26, 26, 24, 28, 24, 28,
+                    22, 24, 24, 30, 28, 28, 26, 28, 30, 24, 30, 30, 30,
+                    30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
+                    30, 30},  // High
+        };
+
+        /* Based on table 9 page 38 */
+        const int NumberOfEccBlocks[4][41] = {
+                // Version: (note that index 0 is for padding, and is set to an illegal value)
+                {-1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4,
+                 4, 4, 4, 4, 6, 6, 6, 6, 7, 8, 8,
+                 9, 9, 10, 12, 12, 12, 13, 14, 15,
+                 16, 17, 18, 19, 19, 20, 21, 22, 24,
+                 25},  // Low
+
+                 {-1, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5,
+                  5, 8, 9, 9, 10, 10, 11, 13, 14,
+                  16, 17, 17, 18, 20, 21, 23, 25,
+                  26, 28, 29, 31, 33, 35, 37, 38,
+                  40, 43, 45, 47, 49},  // Medium
+
+                  {-1, 1, 1, 2, 2, 4, 4, 6, 6, 8, 8,
+                   8, 10, 12, 16, 12, 17, 16, 18, 21,
+                   20, 23, 23, 25, 27, 29, 34, 34, 35,
+                   38, 40, 43, 45, 48, 51, 53, 56, 59,
+                   62, 65, 68},  // Quartile
+
+                   {-1, 1, 1, 2, 4, 4, 4, 5, 6, 8, 8,
+                    11, 11, 16, 16, 18, 16, 19, 21, 25,
+                    25, 25, 34, 30, 32, 35, 37, 40,
+                    42, 45, 48, 51, 54, 57, 60, 63,
+                    66, 70, 74, 77, 81},  // High
+        };
+
         /*
          * Map of ECIs to be placed in the encoding.
          * Each key is an index, & each value is the ECI value.

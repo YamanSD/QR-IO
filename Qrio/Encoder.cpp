@@ -23,15 +23,15 @@
 
 
 #include <stdexcept>
-#include <string>
+#include <vector>
 #include <utility>
 
 #include "Encoder.h"
 
 
 namespace Qrio {
-    using std::domain_error, std::move, std::pair,
-            std::string, std::wstring;
+    using std::domain_error, std::min, std::move, std::pair,
+            std::string, std::vector, std::wstring;
 
     /*
      * Pre-Conditions:
@@ -41,8 +41,30 @@ namespace Qrio {
      *      buffer contains the encoded contents of the DataSegments
      *      in the DataAnalyzer.
      */
-    Encoder::Encoder(DataAnalyzer& data): analyzer{data} {
-        encodeKanji(analyzer[0]);
+    Encoder::Encoder(DataAnalyzer& data): analyzer{data}, codewords(0) {
+        for (auto& segment: data) {
+            encode(segment);
+        }
+
+        const auto capacity{8 * getDataCodewordsCount()};
+
+        appendBits(static_cast<int>(Designator::TERMINATOR),
+                   min(4, static_cast<int>(capacity - size())));
+        appendBits(static_cast<int>(Designator::TERMINATOR),
+                   (8 - size() % 8) % 8);
+
+        assert(size() % 8 == 0);
+
+        // Pad with alternating bytes until data capacity is reached
+        for (int padByte{0xEC}; size() < capacity; padByte ^= 0xEC ^ 0x11)
+            appendBits(padByte, 8);
+
+        // Pack bits into bytes in big endian
+        codewords = vector<int>(size() / 8);
+
+        for (size_t i{0}; i < size(); i++) {
+            codewords.at(i >> 3) |= at(i) << (7 - (i & 7));
+        }
     }
 
     /*
@@ -54,6 +76,22 @@ namespace Qrio {
      *      bits are then appended to the bit stream.
      */
     void Encoder::encode(const DataSegment& data) {
+        switch (data.getType()) {
+            case Designator::NUMERIC:
+                encodeNumeric(data);
+                break;
+            case Designator::ALPHANUMERIC:
+                encodeAlpha(data);
+                break;
+            case Designator::BYTE:
+                encodeByte(data);
+                break;
+            case Designator::KANJI:
+                encodeKanji(data);
+                break;
+            default:
+                throw domain_error("Invalid mode in encoder");
+        }
     }
 
     /*
@@ -97,14 +135,14 @@ namespace Qrio {
 
         for (size_t i{0}; 2 <= n - i; i += 2) {
             checkEci(data, i);
-            c0 = mapAlphanumericChar(data[i]), c1 = mapAlphanumericChar(data[i + 1]);
+            c0 = mapAlphanumericChar(data[i]),
+            c1 = mapAlphanumericChar(data[i + 1]);
+
             appendBits(45 * c0 + c1, 11);
         }
 
-        const auto rem{n % 2};
-
-        if (rem) {
-            appendBits(data[n - 1], 6);
+        if (n % 2) {
+            appendBits(mapAlphanumericChar(data[n - 1]), 6);
         }
     }
 
@@ -115,6 +153,8 @@ namespace Qrio {
      * Post-Conditions:
      *      Encodes the contents of the DataSegment into binary form,
      *      bits are then appended to the bit stream, in Byte form.
+     *
+     * Check 7.4.5
      */
     void Encoder::encodeByte(const DataSegment& data) {
         const auto n{encodeMode(data)};
@@ -124,6 +164,11 @@ namespace Qrio {
             checkEci(data, i);
             mapped_value = mapByteChar(data[i]);
             appendBits(mapped_value, 8);
+
+            if (mapped_value == 0x5C) {
+                // Double 0x5C bytes.
+                appendBits(mapped_value, 8);
+            }
         }
     }
 
@@ -134,6 +179,8 @@ namespace Qrio {
      * Post-Conditions:
      *      Encodes the contents of the DataSegment into binary form,
      *      bits are then appended to the bit stream, in Kenji form.
+     *
+     * Check 7.4.6
      */
     void Encoder::encodeKanji(const DataSegment& data) {
         const auto n{encodeMode(data)};
@@ -149,6 +196,12 @@ namespace Qrio {
                 c -= 0xC140;
             } else {
                 appendBits(c, 13);
+
+                if (c == 0x5C) {
+                    // Double 0x5C values.
+                    appendBits(c, 13);
+                }
+
                 continue;
             }
 
@@ -158,19 +211,6 @@ namespace Qrio {
             appendBits(c0 * 0xC0 + c1, 13);
         }
     }
-
-    /*
-     * Pre-Conditions:
-     *      Index of the ECI (based on the characters of the data).
-     *
-     * Post-Conditions:
-     *      Encodes the contents of the DataSegment into binary form,
-     *      bits are then appended to the bit stream, in ECI form.
-     */
-    void Encoder::encodeEci(size_t index) {
-
-    }
-
 
     /*
      * Pre-Conditions:
@@ -251,6 +291,11 @@ namespace Qrio {
      *      returns the size of the data.
      */
     size_t Encoder::encodeMode(const DataSegment& data) {
+        if (not added_fnc1 and hasFnc1()) {
+            encodeFnc1();
+            added_fnc1 = true;
+        }
+
         appendBits(data.getTypeBits(), 4);
         appendBits(static_cast<long>(data.size()),
                    getCountBitLength(analyzer.getVersion(), data.getType())
@@ -347,8 +392,6 @@ namespace Qrio {
 
         // Unreachable
         return -1;
-
-        return 0;
     }
 
     /*
@@ -367,7 +410,74 @@ namespace Qrio {
             const auto& p{getEciDesignator(eci[index])};
 
             appendBits(static_cast<int>(Designator::ECI), 4);
+
+            if (hasFnc1()) {
+                encodeFnc1();
+            }
+
             appendBits(p.first, p.second);
         }
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Encodes the FNC1 information into the bitstream.
+     */
+    void Encoder::encodeFnc1() {
+        appendBits(
+                static_cast<int>(analyzer.fnc1_value == 1 ? Designator::FNC1_1st
+                                                   : Designator::FNC1_2nd), 4);
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Returns true if the QR symbol has FNC1.
+     */
+    bool Encoder::hasFnc1() const {
+        return analyzer.fnc1_value != 0;
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Returns the number of data codewords,
+     *      accounting for the error correction codewords.
+     */
+    int Encoder::getDataCodewordsCount() const {
+        const auto version{analyzer.getVersion()};
+
+        return getVersionBitCount() / 8
+                - analyzer.getEccPerBlock() * analyzer.getEccBlocksCount();
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Returns the number of data bits that can be stored.
+     */
+    int Encoder::getVersionBitCount() const {
+        const auto version{analyzer.getVersion()};
+
+        int result = (16 * version + 128) * version + 64;
+
+        if (2 <= version) {
+            int numAlign = version / 7 + 2;
+            result -= (25 * numAlign - 10) * numAlign - 55;
+            if (7 <= version)
+                result -= 36;
+        }
+
+        assert(208 <= result && result <= 29648);
+        return result;
     }
 }

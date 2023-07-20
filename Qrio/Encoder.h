@@ -56,6 +56,15 @@ namespace Qrio {
         explicit Encoder(DataAnalyzer&);
     private:
         /*
+         * Used to determine whether we added the FNC1,
+         * after the first mode indicator.
+         */
+        bool added_fnc1{false};
+
+        /* Stores the final 8-bit codewords */
+        std::vector<int> codewords;
+
+        /*
          * Table for the number of bits in character count indicator for
          * QR code.
          * Each row represents a mode indicator;
@@ -119,16 +128,6 @@ namespace Qrio {
          *      bits are then appended to the bit stream, in Kenji form.
          */
         void encodeKanji(const DataSegment &data);
-
-        /*
-         * Pre-Conditions:
-         *      Index of the ECI (based on the characters of the data).
-         *
-         * Post-Conditions:
-         *      Encodes the contents of the DataSegment into binary form,
-         *      bits are then appended to the bit stream, in ECI form.
-         */
-        void encodeEci(size_t);
 
         /*
          * Pre-Conditions:
@@ -208,6 +207,43 @@ namespace Qrio {
          *      If the given index has an ECI value, encode it.
          */
         void checkEci(const DataSegment&, size_t);
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Encodes the FNC1 information into the bitstream.
+         */
+        void encodeFnc1();
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns true if the QR symbol has FNC1.
+         */
+        [[nodiscard]] bool hasFnc1() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the number of data codewords,
+         *      accounting for the error correction codewords.
+         */
+        [[nodiscard]] int getDataCodewordsCount() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the number of data bits that can be stored.
+         */
+        [[nodiscard]] int getVersionBitCount() const;
     };
 }
 

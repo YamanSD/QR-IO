@@ -30,7 +30,7 @@ using namespace std;
 using namespace Qrio;
 
 int main() {
-    const string t{"01234567"};
+    const string t{"01234567ADSASDasdadadAASDASD123123123:/sdASDLANSD;ASLMD"};
     wstring j{L"\ue4aa\u935fA"};
 //    wstring j{L"\u0035\u1002\u0FC0\u0AED\u0AD7"
 //              "\u015C\u0147\u0129\u0059\u01BD"
@@ -57,7 +57,7 @@ int main() {
 ////
 
 
-auto w = DataAnalyzer(j, 1, Ecl::H, Designator::KANJI);
+auto w = DataAnalyzer(t, 30, Ecl::L);
 
 cout << w.size() << endl;
 cout << w[0].size() << endl;
