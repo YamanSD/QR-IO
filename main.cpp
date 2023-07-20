@@ -23,6 +23,7 @@
 
 #include <Qrio/DataAnalyzer.h>
 #include <Qrio/Encoder.h>
+#include <Qrio/ErrorCorrectionEncoder.h>
 #include <iostream>
 #include <string>
 
@@ -57,16 +58,23 @@ int main() {
 ////
 
 
-auto w = DataAnalyzer(t, 30, Ecl::L);
+    auto w = DataAnalyzer(t, 30, Ecl::H, Designator::BYTE);
 
-cout << w.size() << endl;
-cout << w[0].size() << endl;
-cout << w[0].getTypeBits() << endl;
+    cout << w.size() << endl;
+    cout << w[0].size() << endl;
+    cout << w[0].getTypeBits() << endl;
 
-const auto& temp = Encoder(w);
-    for (auto b: temp) {
-        cout << b;
-    }
+    auto temp{Encoder(w)};
+
+    cout << temp.size() << ' ' << temp.getVersionBitCount() << endl;
+
+//    for (auto c: temp) {
+//        cout << c;
+//    }
+
+    cout << endl;
+
+    ErrorCorrectionEncoder k{temp};
 
     cout << endl;
 //    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;

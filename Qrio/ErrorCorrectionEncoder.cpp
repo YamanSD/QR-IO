@@ -23,10 +23,10 @@
 
 #include "ErrorCorrectionEncoder.h"
 
-
+#include <iostream>
 namespace Qrio {
 
     ErrorCorrectionEncoder::ErrorCorrectionEncoder(Encoder& encoder) {
-        if (encoder)
+        assert(encoder.codewords.size() == encoder.getDataCodewordsCount());
     }
 }

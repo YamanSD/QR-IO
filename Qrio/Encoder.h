@@ -42,6 +42,9 @@ namespace Qrio {
      */
     class Encoder final: public BitStream {
     public:
+        /* Stores the final 8-bit codewords */
+        std::vector<int> codewords;
+
         /* Data analyzer from the previous layer */
         DataAnalyzer analyzer;
 
@@ -79,9 +82,6 @@ namespace Qrio {
          * after the first mode indicator.
          */
         bool added_fnc1{false};
-
-        /* Stores the final 8-bit codewords */
-        std::vector<int> codewords;
 
         /*
          * Table for the number of bits in character count indicator for
