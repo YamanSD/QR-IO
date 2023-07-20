@@ -24,6 +24,8 @@
 #ifndef QR_IO_ERRORCORRECTIONENCODER_H
 #define QR_IO_ERRORCORRECTIONENCODER_H
 
+#include "Encoder.h"
+
 
 namespace Qrio {
     /*
@@ -35,7 +37,14 @@ namespace Qrio {
      */
     class ErrorCorrectionEncoder final {
     public:
-
+        /*
+         * Pre-Conditions:
+         *      Reference to the encoder.
+         *
+         * Post-Conditions:
+         *      Error correction codewords are generated.
+         */
+        explicit ErrorCorrectionEncoder(Encoder&);
     private:
     };
 }

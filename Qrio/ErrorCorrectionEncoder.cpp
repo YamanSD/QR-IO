@@ -22,3 +22,11 @@
  */
 
 #include "ErrorCorrectionEncoder.h"
+
+
+namespace Qrio {
+
+    ErrorCorrectionEncoder::ErrorCorrectionEncoder(Encoder& encoder) {
+        if (encoder)
+    }
+}

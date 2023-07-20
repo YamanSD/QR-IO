@@ -54,6 +54,25 @@ namespace Qrio {
          *      in the DataAnalyzer.
          */
         explicit Encoder(DataAnalyzer&);
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the number of data codewords,
+         *      accounting for the error correction codewords.
+         */
+        [[nodiscard]] int getDataCodewordsCount() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the number of data bits that can be stored.
+         */
+        [[nodiscard]] int getVersionBitCount() const;
     private:
         /*
          * Used to determine whether we added the FNC1,
@@ -225,25 +244,6 @@ namespace Qrio {
          *      Returns true if the QR symbol has FNC1.
          */
         [[nodiscard]] bool hasFnc1() const;
-
-        /*
-         * Pre-Conditions:
-         *      None.
-         *
-         * Post-Conditions:
-         *      Returns the number of data codewords,
-         *      accounting for the error correction codewords.
-         */
-        [[nodiscard]] int getDataCodewordsCount() const;
-
-        /*
-         * Pre-Conditions:
-         *      None.
-         *
-         * Post-Conditions:
-         *      Returns the number of data bits that can be stored.
-         */
-        [[nodiscard]] int getVersionBitCount() const;
     };
 }
 

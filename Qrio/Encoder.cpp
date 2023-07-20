@@ -452,8 +452,6 @@ namespace Qrio {
      *      accounting for the error correction codewords.
      */
     int Encoder::getDataCodewordsCount() const {
-        const auto version{analyzer.getVersion()};
-
         return getVersionBitCount() / 8
                 - analyzer.getEccPerBlock() * analyzer.getEccBlocksCount();
     }
