@@ -53,6 +53,15 @@ namespace Qrio {
          *      Error correction codewords are generated.
          */
         explicit ErrorCorrectionEncoder(Encoder&);
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the size of the QR matrix.
+         */
+        [[nodiscard]] size_t getMatrixSize() const;
     private:
         /*
          * Pre-Conditions:
