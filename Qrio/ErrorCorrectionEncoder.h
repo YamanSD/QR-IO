@@ -32,7 +32,7 @@
 
 namespace Qrio {
     /*
-     * ErrorCorrectionEncoder: 1.2
+     * ErrorCorrectionEncoder: 1.2.3
      *
      * Responsible for adding error correction bits into the
      * encoded bit stream.

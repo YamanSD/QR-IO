@@ -117,7 +117,7 @@ namespace Qrio {
     void ErrorCorrectionEncoder::appendEccAndInterleave() {
         const int blocksCount{encoder.analyzer.getEccBlocksCount()},
                     eccPerBlock{encoder.analyzer.getEccPerBlock()},
-                    bitCount{encoder.getVersionBitCount()};
+                    bitCount{encoder.getVersionBitCount() / 8};
 
         const int shortBlocksCount{blocksCount - bitCount % blocksCount},
                     shortBlocksLength{bitCount / blocksCount};
