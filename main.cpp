@@ -31,7 +31,7 @@ using namespace std;
 using namespace Qrio;
 
 int main() {
-    const string t{"01234567ADSASDasdadadAASDASD123123123:/sdASDLANSD;ASLMD"};
+    const string t{"012345671231231231231723618239999"};
     wstring j{L"\ue4aa\u935fA"};
 //    wstring j{L"\u0035\u1002\u0FC0\u0AED\u0AD7"
 //              "\u015C\u0147\u0129\u0059\u01BD"
@@ -58,7 +58,7 @@ int main() {
 ////
 
 
-    auto w = DataAnalyzer(t, 30, Ecl::H, Designator::BYTE);
+    auto w = DataAnalyzer(t, 30, Ecl::H);
 
 
     auto temp{Encoder(w)};
@@ -70,6 +70,8 @@ int main() {
 
 
     ErrorCorrectionEncoder k{temp};
+
+    cout << k.size() << endl;
 
     for (auto s: k) {
         cout << s << ' ';

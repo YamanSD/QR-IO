@@ -24,6 +24,11 @@
 #ifndef QR_IO_STRUCTURER_H
 #define QR_IO_STRUCTURER_H
 
+#include <array>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+
 #include "ErrorCorrectionEncoder.h"
 #include "SquareMatrix.h"
 
@@ -38,22 +43,175 @@ namespace Qrio {
      */
     class Structurer final: public SquareMatrix {
     public:
+        /* Error correction encoder from the previous layer */
+        ErrorCorrectionEncoder ec_encoder;
+
         /*
          * Pre-Conditions:
-         *      Reference to the ErrorCorrectionEncoder from the previous layer.
+         *      Reference to the ErrorCorrectionEncoder from the previous layer,
+         *      optional mask.
          *
          * Post-Conditions:
          *      Fills the QR code matrix with the data bits & other information,
          *      a 0 represents a light module, while a 1 represents a black module.
+         *      Applies the mask.
          *
-         * Check 7.7
+         * Check 7.7 -> 7.10
          */
-        explicit Structurer(ErrorCorrectionEncoder&);
+        explicit Structurer(ErrorCorrectionEncoder&, int mask = -1);
     private:
-//        static constexpr int penalties[4]{
-//            3, 3, 40, 10
-//        };
+        /*
+         * Map coordinates of function modules to their value.
+         * These modules are not included in the masking.
+         */
+        std::unordered_map<std::pair<int, int>, bool> function_modules;
 
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Draws the 8-bit codewords (data and error correction) onto the matrix.
+         *      Function modules need to be marked off before this is called.
+         */
+        void drawCodewords();
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the best mask for the given data.
+         *
+         * Check 7.8.3
+         */
+        [[nodiscard]] int generateMask();
+
+        /*
+         * Pre-Conditions:
+         *      Mask value.
+         *
+         * Post-Conditions:
+         *      Applies the given mask onto the matrix.
+         *
+         * Check 7.8
+         */
+        void applyMask(int);
+
+        /*
+         * Pre-Conditions:
+         *      Mask value.
+         *
+         * Post-Conditions:
+         *      Draws two copies of the format bits (with its own error correction code)
+         *      based on the given mask and the ECL.
+         */
+        void drawFormatBits(int);
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Calculates the penalty score for the current state of the
+         *      matrix.
+         */
+        [[nodiscard]] long getPenalty();
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Draws two copies of the version bits with its own ECC,
+         *      iff 7 <= version <= 40 (check 7.7.2).
+         */
+        void drawVersion();
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Reads this object's version field,
+         *      and draws and marks all function modules.
+         */
+        void drawFunctionPatterns();
+
+        /*
+         * Pre-Conditions:
+         *      Center of the pattern (x, y).
+         *
+         * Post-Conditions:
+         *      Draws the 9x9 finder pattern without the border separator.
+         */
+        void drawFinderPattern(int, int);
+
+        /*
+         * Pre-Conditions:
+         *      Center of the pattern (x, y).
+         *
+         * Post-Conditions:
+         *      Draws a 5x5 alignment pattern.
+         */
+        void drawAlignmentPattern(int, int);
+
+        /*
+         * Pre-Conditions:
+         *      Coordinates of a module,
+         *      color of a module.
+         *
+         * Post-Conditions:
+         *      Sets the color of a module & marks it as a function module.
+         */
+        void setFunctionModule(int, int, bool);
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns an ascending list of positions of alignment patterns.
+         *      Each position is in the range [0,176] and are used on both the x and y axes.
+         */
+        std::vector<int> getAlignmentPatternPositions() const;
+
+        /*
+         * Pre-Conditions:
+         *      Run history.
+         *
+         * Post-Conditions:
+         *      Returns 0, 1, or 2.
+         *      Helper for the getPenalty function.
+         */
+        [[nodiscard]] int finderPenaltyCountPatterns(const std::array<int, 7>&) const;
+
+        /*
+         * Pre-Conditions:
+         *      Current run color,
+         *      current run length,
+         *      run history.
+         *
+         * Post-Conditions:
+         *      None.
+         *
+         * Must be called at the end of a line (row or column) of modules.
+         * A helper function for getPenaltyScore().
+         */
+        [[nodiscard]] int finderPenaltyTerminateAndCount(bool,
+                                                         int,
+                                                         std::array<int, 7>&) const;
+
+        /*
+         * Pre-Conditions:
+         *      current run length,
+         *      run history.
+         *
+         * Post-Conditions:
+         *      Pushes the given value to the front and drops the last value.
+         *      A helper function for getPenaltyScore().
+         */
+        void finderPenaltyAddHistory(int, std::array<int, 7>&) const;
     };
 }
 
