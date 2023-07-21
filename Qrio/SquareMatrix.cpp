@@ -51,7 +51,7 @@ namespace Qrio {
      * Post-Conditions:
      *      Reference to bool at (r, c) in the matrix.
      */
-    vector<bool>::reference SquareMatrix::at(int r, int c) {
+    vector<bool>::reference SquareMatrix::at(size_t r, size_t c) {
         return Parent::at(r).at(c);
     }
 
@@ -63,7 +63,7 @@ namespace Qrio {
      * Post-Conditions:
      *      Constant reference to bool at (r, c) in the matrix.
      */
-    vector<bool>::const_reference SquareMatrix::at(int r, int c) const {
+    vector<bool>::const_reference SquareMatrix::at(size_t r, size_t c) const {
         return Parent::at(r).at(c);
     }
 

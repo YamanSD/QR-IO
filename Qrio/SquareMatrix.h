@@ -55,7 +55,7 @@ namespace Qrio {
          * Post-Conditions:
          *      Reference to bool at (r, c) in the matrix.
          */
-        std::vector<bool>::reference at(int, int);
+        std::vector<bool>::reference at(size_t, size_t);
 
         /*
          * Pre-Conditions:
@@ -65,7 +65,7 @@ namespace Qrio {
          * Post-Conditions:
          *      Constant reference to bool at (r, c) in the matrix.
          */
-        std::vector<bool>::const_reference at(int, int) const;
+        std::vector<bool>::const_reference at(size_t, size_t) const;
 
         /*
          * Pre-Conditions:
