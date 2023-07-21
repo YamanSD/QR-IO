@@ -60,23 +60,20 @@ int main() {
 
     auto w = DataAnalyzer(t, 30, Ecl::H, Designator::BYTE);
 
-    cout << w.size() << endl;
-    cout << w[0].size() << endl;
-    cout << w[0].getTypeBits() << endl;
 
     auto temp{Encoder(w)};
 
-    cout << temp.size() << ' ' << temp.getVersionBitCount() << endl;
 
 //    for (auto c: temp) {
 //        cout << c;
 //    }
 
-    cout << endl;
 
     ErrorCorrectionEncoder k{temp};
 
-    cout << endl;
+    for (auto s: k) {
+        cout << s << ' ';
+    }
 //    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 //
 //    // Read the C++ string containing Japanese characters

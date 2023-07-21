@@ -32,12 +32,14 @@ namespace Qrio {
      * M: Medium,
      * Q: Quartile,
      * H: High
+     *
+     * Check table 12 page 55.
      */
     enum class Ecl {
-        L = 0,
-        M = 1,
-        Q = 2,
-        H = 3,
+        L = 0b01,
+        M = 0b00,
+        Q = 0b11,
+        H = 0b10,
     };
 }
 

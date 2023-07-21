@@ -37,6 +37,8 @@ namespace Qrio {
      * Responsible for adding error correction bits into the
      * encoded bit stream.
      * Responsible for Step 3 of the encoding procedure.
+     *
+     * Check 7.5 & 7.6
      */
     class ErrorCorrectionEncoder final: public std::vector<int> {
     public:

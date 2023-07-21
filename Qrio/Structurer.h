@@ -24,6 +24,9 @@
 #ifndef QR_IO_STRUCTURER_H
 #define QR_IO_STRUCTURER_H
 
+#include "ErrorCorrectionEncoder.h"
+#include "SquareMatrix.h"
+
 
 namespace Qrio {
     /*
@@ -33,10 +36,24 @@ namespace Qrio {
      * data mask, & place the format information.
      * Responsible for Steps 4, 5, 6, & 7 of the encoding procedure.
      */
-    class Structurer final {
+    class Structurer final: public SquareMatrix {
     public:
-
+        /*
+         * Pre-Conditions:
+         *      Reference to the ErrorCorrectionEncoder from the previous layer.
+         *
+         * Post-Conditions:
+         *      Fills the QR code matrix with the data bits & other information,
+         *      a 0 represents a light module, while a 1 represents a black module.
+         *
+         * Check 7.7
+         */
+        explicit Structurer(ErrorCorrectionEncoder&);
     private:
+//        static constexpr int penalties[4]{
+//            3, 3, 40, 10
+//        };
+
     };
 }
 

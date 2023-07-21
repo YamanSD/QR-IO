@@ -22,3 +22,8 @@
  */
 
 #include "Structurer.h"
+
+
+namespace Qrio {
+
+}

@@ -34,7 +34,7 @@ namespace Qrio {
      * Used to store the bits of an N x N matrix.
      * Inherits from a std::vector<std::vector<bool>>.
      */
-    class SquareMatrix final: public std::vector<std::vector<bool>> {
+    class SquareMatrix : public std::vector<std::vector<bool>> {
     public:
         /*
          * Pre-Conditions:
