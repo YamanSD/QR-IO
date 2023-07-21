@@ -32,13 +32,13 @@
 
 namespace Qrio {
     /*
-     * ErrorCorrectionEncoder: 1.0
+     * ErrorCorrectionEncoder: 1.2
      *
      * Responsible for adding error correction bits into the
      * encoded bit stream.
      * Responsible for Step 3 of the encoding procedure.
      */
-    class ErrorCorrectionEncoder final: std::vector<int> {
+    class ErrorCorrectionEncoder final: public std::vector<int> {
     public:
         /* Encoder instance from the previous layer */
         Encoder encoder;
