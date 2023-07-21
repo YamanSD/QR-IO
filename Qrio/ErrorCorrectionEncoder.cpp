@@ -200,8 +200,10 @@ namespace Qrio {
      *
      * Post-Conditions:
      *      Returns the size of the QR matrix.
+     *
+     * Check 6.3.2.1
      */
     size_t ErrorCorrectionEncoder::getMatrixSize() const {
-        return encoder.analyzer.getVersion() * encoder.analyzer.getVersion();
+        return 17 + 4 * encoder.analyzer.getVersion();
     }
 }
