@@ -29,12 +29,12 @@
 
 namespace Qrio {
     /*
-     * SquareMatrix: 1.0
+     * SquareMatrix: 1.1
      *
      * Used to store the bits of an N x N matrix.
      * Inherits from a std::vector<std::vector<bool>>.
      */
-    class SquareMatrix : public std::vector<std::vector<bool>> {
+    class SquareMatrix: public std::vector<std::vector<bool>> {
     public:
         /*
          * Pre-Conditions:
@@ -55,7 +55,7 @@ namespace Qrio {
          * Post-Conditions:
          *      Reference to bool at (r, c) in the matrix.
          */
-        bool& at(int, int);
+        std::vector<bool>::reference at(int, int);
 
         /*
          * Pre-Conditions:
@@ -65,18 +65,16 @@ namespace Qrio {
          * Post-Conditions:
          *      Constant reference to bool at (r, c) in the matrix.
          */
-        const bool& at(int, int) const;
+        std::vector<bool>::const_reference at(int, int) const;
 
         /*
          * Pre-Conditions:
-         *      New side length.
+         *      None.
          *
          * Post-Conditions:
-         *      Matrix changes size.
+         *      Returns the area of the matrix.
          */
-        void resize(size_t);
-    private:
-        size_t n;
+        size_t getArea() const;
     };
 }
 

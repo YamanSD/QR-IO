@@ -35,7 +35,7 @@
 
 namespace Qrio {
     /*
-     * Structurer: 1.0
+     * Structurer: 1.2
      *
      * Responsible for structuring the final message, place modules,
      * data mask, & place the format information.
@@ -61,10 +61,14 @@ namespace Qrio {
         explicit Structurer(ErrorCorrectionEncoder&, int mask = -1);
     private:
         /*
-         * Map coordinates of function modules to their value.
+         * Matrix of function modules.
          * These modules are not included in the masking.
+         * Used mainly during masking.
          */
-        std::unordered_map<std::pair<int, int>, bool> function_modules;
+        SquareMatrix function_modules;
+
+        /* Mask of the QR code */
+        int mask;
 
         /*
          * Pre-Conditions:
@@ -115,6 +119,8 @@ namespace Qrio {
          * Post-Conditions:
          *      Calculates the penalty score for the current state of the
          *      matrix.
+         *
+         * Check 7.8.3
          */
         [[nodiscard]] long getPenalty();
 
