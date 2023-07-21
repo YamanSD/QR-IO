@@ -24,6 +24,9 @@
 #ifndef QR_IO_ERRORCORRECTIONENCODER_H
 #define QR_IO_ERRORCORRECTIONENCODER_H
 
+#include <deque>
+#include <vector>
+
 #include "Encoder.h"
 
 
@@ -35,8 +38,11 @@ namespace Qrio {
      * encoded bit stream.
      * Responsible for Step 3 of the encoding procedure.
      */
-    class ErrorCorrectionEncoder final {
+    class ErrorCorrectionEncoder final: std::vector<int> {
     public:
+        /* Encoder instance from the previous layer */
+        Encoder encoder;
+
         /*
          * Pre-Conditions:
          *      Reference to the encoder.
@@ -46,6 +52,49 @@ namespace Qrio {
          */
         explicit ErrorCorrectionEncoder(Encoder&);
     private:
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns a Reed-Solomon ECC generator polynomial for the given degree.
+         *
+         * Implemented as a lookup table instead of an algorithm.
+         */
+        [[nodiscard]] std::vector<int> reedSolomonDivisor() const;
+
+        /*
+         * Pre-Conditions:
+         *      Two field elements.
+         *
+         * Post-Conditions:
+         *      Returns the product of the two given field elements modulo GF(2^8/0x11D).
+         */
+        [[nodiscard]] static int reedSolomonMultiply(int, int);
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns a new byte string representing the given data
+         *      with the appropriate error correction codewords appended to it,
+         *      based on this object's version and error correction level.
+         */
+        void appendEccAndInterleave();
+
+        /*
+         * Pre-Conditions:
+         *      Data,
+         *      divisor polynomials.
+         *
+         * Post-Conditions:
+         *      Returns the Reed-Solomon error correction codeword for the
+         *      given data and divisor polynomials.
+         */
+        [[nodiscard]] static std::deque<int> reedSolomonRemainder(
+                const std::vector<int> &data,
+                const std::vector<int> &divisor);
     };
 }
 
