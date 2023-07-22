@@ -324,7 +324,7 @@ namespace Qrio {
         }
 
         for (int i{8}; i < 15; i++) {
-            setFunctionModule(8, size() - i - 15, getBit(bits, i));
+            setFunctionModule(8, size() + i - 15, getBit(bits, i));
         }
 
         /* Always dark */
@@ -388,7 +388,7 @@ namespace Qrio {
         size_t bit_index{0}, x, y;
         bool is_upward;
 
-        for (size_t right{size() - 1}; 1 <= right; right -= 2) {
+        for (long right = static_cast<long>(size() - 1); 1 <= right; right -= 2) {
             if (right == 6) {
                 right--;
             }
