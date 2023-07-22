@@ -47,6 +47,9 @@ namespace Qrio {
         /* Error correction encoder from the previous layer */
         ErrorCorrectionEncoder ec_encoder;
 
+        /* Final mask of the QR code */
+        int final_mask;
+
         /*
          * Pre-Conditions:
          *      Reference to the ErrorCorrectionEncoder from the previous layer,
@@ -67,9 +70,6 @@ namespace Qrio {
          * Used mainly during masking.
          */
         SquareMatrix function_modules;
-
-        /* Final mask of the QR code */
-        int final_mask;
 
         /*
          * Pre-Conditions:
@@ -191,7 +191,7 @@ namespace Qrio {
          *      Returns 0, 1, or 2.
          *      Helper for the getPenalty function.
          */
-        [[nodiscard]] int finderPenaltyCountPatterns(const std::array<size_t, 7>&) const;
+        [[nodiscard]] int finderPenaltyCountPatterns(const std::array<int, 7>&) const;
 
         /*
          * Pre-Conditions:
@@ -207,7 +207,7 @@ namespace Qrio {
          */
         [[nodiscard]] int finderPenaltyTerminateAndCount(bool,
                                                          size_t,
-                                                         std::array<size_t, 7>&) const;
+                                                         std::array<int, 7>&) const;
 
         /*
          * Pre-Conditions:
@@ -218,7 +218,7 @@ namespace Qrio {
          *      Pushes the given value to the front and drops the last value.
          *      A helper function for getPenaltyScore().
          */
-        void finderPenaltyAddHistory(size_t, std::array<size_t, 7>&) const;
+        void finderPenaltyAddHistory(size_t, std::array<int, 7>&) const;
 
         /*
          * Pre-Conditions:

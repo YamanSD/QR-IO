@@ -51,7 +51,7 @@ namespace Qrio {
      * Post-Conditions:
      *      Reference to bool at (r, c) in the matrix.
      */
-    vector<bool>::reference SquareMatrix::at(size_t r, size_t c) {
+    vector<bool>::reference SquareMatrix::at(size_t c, size_t r) {
         return Parent::at(r).at(c);
     }
 
@@ -76,5 +76,29 @@ namespace Qrio {
      */
     size_t SquareMatrix::getArea() const {
         return size() * size();
+    }
+
+    /*
+     * Pre-Conditions:
+     *      Row index, column index.
+     *      Indices are valid (i.e. in [0, n))
+     *
+     * Post-Conditions:
+     *      Reference to bool at (c, r) in the matrix.
+     */
+    vector<bool>::reference SquareMatrix::module(size_t x, size_t y) {
+        return at(y, x);
+    }
+
+    /*
+     * Pre-Conditions:
+     *      Row index, column index.
+     *      Indices are valid (i.e. in [0, n))
+     *
+     * Post-Conditions:
+     *      Constant reference to bool at (y, x) in the matrix.
+     */
+    vector<bool>::const_reference SquareMatrix::module(size_t x, size_t y) const {
+        return at(y, x);
     }
 }

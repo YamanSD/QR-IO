@@ -55,7 +55,17 @@ namespace Qrio {
          * Post-Conditions:
          *      Reference to bool at (r, c) in the matrix.
          */
-        std::vector<bool>::reference at(size_t, size_t);
+        [[nodiscard]] std::vector<bool>::reference at(size_t, size_t);
+
+        /*
+         * Pre-Conditions:
+         *      Row index, column index.
+         *      Indices are valid (i.e. in [0, n))
+         *
+         * Post-Conditions:
+         *      Reference to bool at (y, x) in the matrix.
+         */
+        [[nodiscard]] std::vector<bool>::reference module(size_t, size_t);
 
         /*
          * Pre-Conditions:
@@ -65,7 +75,17 @@ namespace Qrio {
          * Post-Conditions:
          *      Constant reference to bool at (r, c) in the matrix.
          */
-        std::vector<bool>::const_reference at(size_t, size_t) const;
+        [[nodiscard]] std::vector<bool>::const_reference at(size_t, size_t) const;
+
+        /*
+         * Pre-Conditions:
+         *      Row index, column index.
+         *      Indices are valid (i.e. in [0, n))
+         *
+         * Post-Conditions:
+         *      Constant reference to bool at (y, x) in the matrix.
+         */
+        [[nodiscard]] std::vector<bool>::const_reference module(size_t, size_t) const;
 
         /*
          * Pre-Conditions:

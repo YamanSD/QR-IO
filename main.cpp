@@ -24,14 +24,36 @@
 #include <Qrio/DataAnalyzer.h>
 #include <Qrio/Encoder.h>
 #include <Qrio/ErrorCorrectionEncoder.h>
+#include <Qrio/Structurer.h>
 #include <iostream>
 #include <string>
 
 using namespace std;
 using namespace Qrio;
 
+
+void printQr(const Structurer &qr) {
+    int border = 4;
+//    cout << qr.size() << endl;
+//
+//    cout << -border << ' ' << qr.size() + border << endl;
+//    unsigned y = -border;
+//
+//    cout << (y < qr.size() + border) << endl;
+
+    for (int y = 0; y < qr.size(); y++) {
+        for (int x = 0; x < qr.size(); x++) {
+            cout << (qr.at(x, y) ? "##" : "  ");
+        }
+        cout << endl;
+    }
+
+    cout << "ALL GOOD " << qr.final_mask << endl;
+}
+
+
 int main() {
-    const string t{"012345671231231231231723618239999"};
+    const wstring t{L"01234567"};
     wstring j{L"\ue4aa\u935fA"};
 //    wstring j{L"\u0035\u1002\u0FC0\u0AED\u0AD7"
 //              "\u015C\u0147\u0129\u0059\u01BD"
@@ -58,8 +80,7 @@ int main() {
 ////
 
 
-    auto w = DataAnalyzer(t, 30, Ecl::H);
-
+    auto w = DataAnalyzer(t, 1, Ecl::H);
 
     auto temp{Encoder(w)};
 
@@ -71,16 +92,40 @@ int main() {
 
     ErrorCorrectionEncoder k{temp};
 
-    cout << k.size() << endl;
+    //    cout << k.size() << #######  #    #######
+    //#     #   ### #     #
+    //# ### # #     # ### #
+    //# ### # ###   # ### #
+    //# ### #  ##   # ### #
+    //#     #   ### #     #
+    //####### # # # #######
+    //         ###
+    //   ## ##  ##     ##
+    // ## #  ###  # # ### #
+    //      ##### # # # ##
+    // # ##   # # ###   #
+    //  #   ## # # #   # ##
+    //        #    # # ####
+    //####### ### #  ##  #
+    //#     #     ## ## #
+    //# ### # ###  ###  # #
+    //# ### # ## ##   ##
+    //# ### #    # ##  ####
+    //#     #  #  ### # # #
+    //#######  ### ##   ## endl;
+//
+//    for (auto& c: k) {
+//        cout << c << " ";
+//    }
 
-    for (auto s: k) {
-        cout << s << ' ';
-    }
+    Structurer f{k};
+//
+    printQr(f);
 //    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 //
 //    // Read the C++ string containing Japanese characters
 //    std::string inputString;
-//    std::cout << "Enter the C++ string containing Japanese characters: ";
+//    cout << "Enter the C++ string containing Japanese characters: ";
 //    std::getline(std::cin inputString);
 //
 //    // Convert the string to a UTF-16 encoded wide string
@@ -90,7 +135,7 @@ int main() {
 //    for (wchar_t c : utf16String) {
 //        std::wcout << std::hex << static_cast<unsigned>(c) << " ";
 //    }
-//    std::wcout << std::endl;
+//    std::wcout << endl;
 //
 //    return 0;
 }

@@ -57,16 +57,16 @@ namespace Qrio {
         long result{0};
         bool color;
         int dark_counter{0}, x_cycles, y_cycles;
-        array<size_t, 7> run_history{};
+        array<int, 7> run_history{};
 
         /* Adjacent modules in row having same color, and finder-like patterns */
         for (size_t y{0}; y < size(); y++) {
             color = false;
             x_cycles = 0;
-            run_history = array<size_t, 7>();
+            run_history = {};
 
             for (size_t x{0}; x < size(); x++) {
-                if (at(x, y) == color) {
+                if (module(x, y) == color) {
                     x_cycles++;
 
                     if (x_cycles == 5) {
@@ -81,22 +81,22 @@ namespace Qrio {
                         result += penalties[2] * finderPenaltyCountPatterns(run_history);
                     }
 
-                    color = at(x, y);
+                    color = module(x, y);
                     x_cycles = 1;
                 }
             }
 
-            result += finderPenaltyTerminateAndCount(color, x_cycles, run_history);
+            result += penalties[2] * finderPenaltyTerminateAndCount(color, x_cycles, run_history);
         }
 
         /* Adjacent modules in column having same color, and finder-like patterns */
         for (size_t x{0}; x < size(); x++) {
             color = false;
             y_cycles = 0;
-            run_history = array<size_t, 7>();
+            run_history = {};
 
             for (size_t y{0}; y < size(); y++) {
-                if (at(x, y) == color) {
+                if (module(x, y) == color) {
                     y_cycles++;
 
                     if (y_cycles == 5) {
@@ -111,20 +111,22 @@ namespace Qrio {
                         result += penalties[2] * finderPenaltyCountPatterns(run_history);
                     }
 
-                    color = at(x, y);
+                    color = module(x, y);
                     y_cycles = 1;
                 }
             }
+
+            result += penalties[2] * finderPenaltyTerminateAndCount(color, y_cycles, run_history);
         }
 
         /* 2x2 blocks of modules having same color */
         for (size_t y{0}; y < size() - 1; y++) {
             for (size_t x{0}; x < size() - 1; x++) {
-                color = at(x, y);
+                color = module(x, y);
 
-                if (color == at(x + 1, y)
-                        and color == at(x, y + 1)
-                        and color == at(x + 1, y + 1)) {
+                if (color == module(x + 1, y)
+                        and color == module(x, y + 1)
+                        and color == module(x + 1, y + 1)) {
                     result += penalties[1];
                 }
             }
@@ -139,12 +141,11 @@ namespace Qrio {
             }
         }
 
-        const auto area{getArea()};
+        const auto area{static_cast<long>(getArea())};
 
         /* Compute the smallest integer k >= 0 such that (45-5k)% <= dark/total <= (55+5k)% */
         int k{static_cast<int>(
-                (abs(static_cast<long>(dark_counter * 20 - area * 10)) + area - 1)
-                / area) - 1};
+                (abs(dark_counter * 20 - area * 10) + area - 1) / area) - 1};
 
         assert(0 <= k and k <= 9);
         result += k * penalties[3];
@@ -172,6 +173,7 @@ namespace Qrio {
             SquareMatrix(ec_encoder.getMatrixSize()),  // Initialize super class
             function_modules(ec_encoder.getMatrixSize()),
             final_mask{mask} {
+
         drawFunctionPatterns();
         drawCodewords();
 
@@ -264,15 +266,15 @@ namespace Qrio {
      *      Draws the 9x9 finder pattern without the border separator.
      */
     void Structurer::drawFinderPattern(size_t x, size_t y) {
-        size_t distance, xx, yy;
+        long distance, xx, yy;
 
         for (int dy{-4}; dy <= 4; dy++) {
             for (int dx{-4}; dx <= 4; dx++) {
                 distance = max(abs(dx), abs(dy));
-                xx = x + dx;
-                yy = y + dy;
+                xx = static_cast<long>(x) + dx;
+                yy = static_cast<long>(y) + dy;
 
-                if (x <= xx and xx < size() and 0 <= yy and yy < size()) {
+                if (0 <= xx and xx < size() and 0 <= yy and yy < size()) {
                     setFunctionModule(xx, yy, distance != 2 and distance != 4);
                 }
             }
@@ -358,8 +360,8 @@ namespace Qrio {
         for (size_t i{0}; i < aligns; i++) {
             for (size_t j{0}; j < aligns; j++) {
                 /* Do not draw on the finder patterns */
-                if ((i or (j and j != aligns - 1))
-                    or (i == aligns - 1 and not j)) {
+                if (not ((i == 0 and j == 0) or (i == 0 and j == aligns - 1)
+                    or (i == aligns - 1 and j == 0))) {
                     drawAlignmentPattern(alignment_centers.at(i),
                                          alignment_centers.at(j));
                 }
@@ -431,16 +433,16 @@ namespace Qrio {
      *
      * Post-Conditions:
      *      Pushes the given value to the front and drops the last value.
-     *      A helper function for getPenaltyScore().
+     *      A helper function for getPenalty().
      */
     void Structurer::finderPenaltyAddHistory(size_t length,
-                                             array<size_t, 7>& history) const {
+                                             array<int, 7>& history) const {
         if (not history.at(0)) {
             length += size();
         }
 
         copy_backward(history.cbegin(), history.cend() - 1, history.end());
-        history.at(0) = length;
+        history.at(0) = static_cast<int>(length);
     }
 
     /*
@@ -479,7 +481,7 @@ namespace Qrio {
      *      Returns 0, 1, or 2.
      *      Helper for the getPenalty function.
      */
-    int Structurer::finderPenaltyCountPatterns(const array<size_t, 7>& history) const {
+    int Structurer::finderPenaltyCountPatterns(const array<int, 7>& history) const {
         auto n{history.at(1)};
         assert(n <= 3 * size());
 
@@ -489,8 +491,8 @@ namespace Qrio {
                 and history.at(4) == n
                 and history.at(5) == n};
 
-        return (core and 4 * n <= history.at(0) and n <= history.at(6) ? 1 : 0)
-        + (core and 4 * n <= history.at(6) and n <= history.at(0) ? 1 : 0);
+        return (core and 4 * n <= history.at(0) and history.at(6) >= n ? 1 : 0)
+        + (core and 4 * n <= history.at(6) and history.at(0) >= n ? 1 : 0);
     }
 
     /*
@@ -503,11 +505,11 @@ namespace Qrio {
      *      None.
      *
      * Must be called at the end of a line (row or column) of modules.
-     * A helper function for getPenaltyScore().
+     * A helper function for getPenalty().
      */
     int Structurer::finderPenaltyTerminateAndCount(bool color,
                                                    size_t length,
-                                                   array<size_t, 7>& history) const {
+                                                   array<int, 7>& history) const {
         /* Terminate dark run */
         if (color) {
             finderPenaltyAddHistory(length, history);
@@ -590,6 +592,7 @@ namespace Qrio {
             drawFormatBits(i);
 
             penalty = getPenalty();
+
             if (penalty < min_penalty) {
                 min_penalty = penalty;
                 result = i;
