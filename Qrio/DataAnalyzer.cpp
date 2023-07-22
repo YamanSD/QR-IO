@@ -50,9 +50,11 @@ namespace Qrio {
      * Fills the segments with the optimal DataSegments.
      */
     DataAnalyzer::DataAnalyzer(wstring data_cpy, int version, Ecl ecl, Designator override_mode,
-                               unordered_map<size_t, int> eci, int fnc1):
+                               unordered_map<size_t, int> eci,
+                               int fnc1, int struct_id, int struct_count):
     version{version}, data{move(data_cpy)}, fnc1_value{fnc1},
-    ecl{ecl}, eci{move(eci)} {
+    ecl{ecl}, eci{move(eci)}, struct_id{struct_id},
+    struct_count{struct_count} {
         checkVersion();
         checkOverrideMode(override_mode);
 
@@ -160,33 +162,6 @@ namespace Qrio {
             push_back(DataSegment{data, left, current, current_mode});
         }
     }
-
-    /*
-     * Pre-Conditions:
-     *      Data wstring,
-     *      Version to be used.
-     *
-     * Post-Conditions:
-     *      Segments contains optimized DataSegments,
-     *      data contains copy of the given data wstring
-     *
-     *
-     * Initializes the data members.
-     * Fills the segments with the optimal DataSegments.
-     *
-     * Check Annex J.
-     */
-    DataAnalyzer::DataAnalyzer(const string& data_cpy, int version,
-                               Ecl ecl, Designator override_mode,
-                               const unordered_map<size_t, int>& eci,
-                               int fnc1):
-    DataAnalyzer(
-            move(wstring().assign(data_cpy.begin(), data_cpy.end())),
-            version,
-            ecl,
-            override_mode,
-            eci,
-            fnc1) {}
 
     /*
      * Pre-Conditions:
@@ -442,7 +417,7 @@ namespace Qrio {
      *
      * Post-Conditions:
      *      Returns the number of the Kenji byte pairs at the start
-     *      of the subwstring.
+     *      of the substring.
      */
     size_t DataAnalyzer::countKanji(const wstring& data, size_t start) {
         size_t counter{0};

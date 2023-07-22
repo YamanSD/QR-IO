@@ -42,6 +42,11 @@ namespace Qrio {
      *      in the DataAnalyzer.
      */
     Encoder::Encoder(DataAnalyzer& data): analyzer{data}, codewords(0) {
+        if (analyzer.struct_count != -1 and analyzer.struct_id != -1) {
+            appendSequenceIndicator();
+            appendParityData(analyzer.getData());
+        }
+
         for (auto& segment: data) {
             encode(segment);
         }
@@ -477,5 +482,49 @@ namespace Qrio {
 
         assert(208 <= result && result <= 29648);
         return result;
+    }
+
+    /*
+     * Pre-Conditions:
+     *      Data string.
+     *
+     * Post-Conditions:
+     *      Generates the parity data for structured append,
+     *      then appends it to the stream.
+     *
+     * Check 8.3
+     */
+    void Encoder::appendParityData(const wstring& data) {
+        int result{0};
+
+        for (auto c: data) {
+            c = mapByteChar(c);
+
+            if (DataAnalyzer::isKanji(c)) {
+                result ^= c / (16 * 16);
+                result ^= c % (16 * 16);
+            } else {
+                result ^= c;
+            }
+        }
+
+        appendBits(result, 8);
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Appends the structured append designator,
+     *      appends the symbol sequence indicator
+     *      for structured append into the stream.
+     *
+     * Check 8.2
+     */
+    void Encoder::appendSequenceIndicator() {
+        appendBits(static_cast<int>(Designator::APPEND), 4);
+        appendBits(analyzer.struct_id, 4);
+        appendBits(analyzer.struct_count, 4);
     }
 }

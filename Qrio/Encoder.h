@@ -30,10 +30,9 @@
 #include "DataAnalyzer.h"
 #include "DataSegment.h"
 
-
 namespace Qrio {
     /*
-     * Encoder: 1.5.3
+     * Encoder: 1.6.0
      *
      * Encodes the DataSegments in the DataAnalyzer into a BitStream.
      * Encoding is done based on section 7, Annex H,
@@ -244,6 +243,31 @@ namespace Qrio {
          *      Returns true if the QR symbol has FNC1.
          */
         [[nodiscard]] bool hasFnc1() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Generates the parity data for structured append,
+         *      then appends it to the stream.
+         *
+         * Check 8.3
+         */
+        void appendParityData(const std::wstring&);
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Appends the structured append designator,
+         *      appends the symbol sequence indicator
+         *      for structured append into the stream.
+         *
+         * Check 8.2
+         */
+        void appendSequenceIndicator();
     };
 }
 

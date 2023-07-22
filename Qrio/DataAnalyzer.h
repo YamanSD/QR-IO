@@ -32,10 +32,9 @@
 #include "Designator.h"
 #include "Ecl.h"
 
-
 namespace Qrio {
     /*
-     * DataAnalyzer: 1.5.5
+     * DataAnalyzer: 1.6.0
      *
      * Divides the given data string into DataSegments in the most optimal way.
      * The optimization is based on Annex J of ISO/IEC 18004:2015 page 99.
@@ -45,6 +44,18 @@ namespace Qrio {
     public:
         /* FNC1 value to be used */
         const int fnc1_value;
+
+        /*
+         * Structure ID of the given QR code [0, 16],
+         * -1 indicates no structure append.
+         */
+        const int struct_id;
+
+        /*
+         * Number of QR codes in structured append,
+         * -1 indicates no structure append.
+         */
+        const int struct_count;
 
         /*
          * Pre-Conditions:
@@ -66,26 +77,9 @@ namespace Qrio {
                               Ecl ecl = Ecl::L,
                               Designator override_mode = Designator::TERMINATOR,
                               std::unordered_map<size_t, int> eci = {},
-                              int fnc1 = 0);
-
-        /*
-         * Pre-Conditions:
-         *      Data string,
-         *      Version to be used.
-         *
-         * Post-Conditions:
-         *      Segments contains optimized DataSegments,
-         *      data contains copy of the given data string
-         *
-         *
-         * Initializes the data members.
-         * Fills the segments with the optimal DataSegments.
-         */
-        explicit DataAnalyzer(const std::string&, int,
-                              Ecl ecl = Ecl::L,
-                              Designator override_mode = Designator::TERMINATOR,
-                              const std::unordered_map<size_t, int>& eci = {},
-                              int fnc1 = 0);
+                              int fnc1 = 0,
+                              int struct_id = -1,
+                              int struct_count = -1);
 
         /*
          * Pre-Conditions:
@@ -158,6 +152,45 @@ namespace Qrio {
          *      Returns the number of EccBlocks based on the data fields.
          */
         [[nodiscard]] int getEccBlocksCount() const;
+
+        /*
+         * Pre-Conditions:
+         *      A constant reference to a string,
+         *      starting index.
+         *
+         * Post-Conditions:
+         *      Returns true if the given string consists exclusively of bytes.
+         */
+        [[nodiscard]] static bool isByte(const std::wstring&);
+
+        /*
+         * Pre-Conditions:
+         *      A constant reference to a string,
+         *      starting index.
+         *
+         * Post-Conditions:
+         *      Returns true if the given string consists exclusively of numerics.
+         */
+        [[nodiscard]] static bool isNumeric(const std::wstring&);
+
+        /*
+         * Pre-Conditions:
+         *      A constant reference to a string,
+         *      starting index.
+         *
+         * Post-Conditions:
+         *      Returns true if the given string consists exclusively of alphanumerics.
+         */
+        [[nodiscard]] static bool isAlphanumeric(const std::wstring&);
+
+        /*
+         * Pre-Conditions:
+         *      A character c.
+         *
+         * Post-Conditions:
+         *      Returns true if the given wchar_t is kanji.
+         */
+        [[nodiscard]] static bool isKanji(wchar_t);
     private:
         /* Based on table 9 page 38 */
         const int EccPerBlock[4][41] = {
@@ -274,48 +307,9 @@ namespace Qrio {
          *      starting index.
          *
          * Post-Conditions:
-         *      Returns true if the given string consists exclusively of bytes.
-         */
-        [[nodiscard]] static bool isByte(const std::wstring&);
-
-        /*
-         * Pre-Conditions:
-         *      A constant reference to a string,
-         *      starting index.
-         *
-         * Post-Conditions:
-         *      Returns true if the given string consists exclusively of numerics.
-         */
-        [[nodiscard]] static bool isNumeric(const std::wstring&);
-
-        /*
-         * Pre-Conditions:
-         *      A constant reference to a string,
-         *      starting index.
-         *
-         * Post-Conditions:
-         *      Returns true if the given string consists exclusively of alphanumerics.
-         */
-        [[nodiscard]] static bool isAlphanumeric(const std::wstring&);
-
-        /*
-         * Pre-Conditions:
-         *      A constant reference to a string,
-         *      starting index.
-         *
-         * Post-Conditions:
          *      Returns true if the given string consists exclusively of Kanji characters.
          */
         [[nodiscard]] static bool isKanji(const std::wstring&);
-
-        /*
-         * Pre-Conditions:
-         *      A character c.
-         *
-         * Post-Conditions:
-         *      Returns true if the given wchar_t is kanji.
-         */
-        [[nodiscard]] static bool isKanji(wchar_t);
 
         /*
          * Pre-Conditions:
