@@ -35,7 +35,7 @@
 
 namespace Qrio {
     /*
-     * DataAnalyzer: 1.5.4
+     * DataAnalyzer: 1.5.5
      *
      * Divides the given data string into DataSegments in the most optimal way.
      * The optimization is based on Annex J of ISO/IEC 18004:2015 page 99.
@@ -113,6 +113,15 @@ namespace Qrio {
          *      Returns the chosen ECL.
          */
         [[nodiscard]] Ecl getEcl() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Returns the chosen ECL bit pattern.
+         */
+        [[nodiscard]] int getEclBits() const;
 
         /*
          * Pre-Conditions:

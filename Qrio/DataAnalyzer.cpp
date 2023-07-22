@@ -658,4 +658,15 @@ namespace Qrio {
     int DataAnalyzer::getEccBlocksCount() const {
         return NumberOfEccBlocks[getEclIndex()][getVersion()];
     }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Returns the chosen ECL bit pattern.
+     */
+    int DataAnalyzer::getEclBits() const {
+        return static_cast<int>(getEcl());
+    }
 }
