@@ -25,6 +25,7 @@
 #define QR_IO_STRUCTURER_H
 
 #include <array>
+#include <deque>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -38,7 +39,7 @@ namespace Qrio {
      * Structurer: 1.2
      *
      * Responsible for structuring the final message, place modules,
-     * data mask, & place the format information.
+     * data final_mask, & place the format information.
      * Responsible for Steps 4, 5, 6, & 7 of the encoding procedure.
      */
     class Structurer final: public SquareMatrix {
@@ -49,12 +50,12 @@ namespace Qrio {
         /*
          * Pre-Conditions:
          *      Reference to the ErrorCorrectionEncoder from the previous layer,
-         *      optional mask.
+         *      optional final_mask.
          *
          * Post-Conditions:
          *      Fills the QR code matrix with the data bits & other information,
          *      a 0 represents a light module, while a 1 represents a black module.
-         *      Applies the mask.
+         *      Applies the final_mask.
          *
          * Check 7.7 -> 7.10
          */
@@ -67,8 +68,8 @@ namespace Qrio {
          */
         SquareMatrix function_modules;
 
-        /* Mask of the QR code */
-        int mask;
+        /* Final mask of the QR code */
+        int final_mask;
 
         /*
          * Pre-Conditions:
@@ -85,7 +86,7 @@ namespace Qrio {
          *      None.
          *
          * Post-Conditions:
-         *      Returns the best mask for the given data.
+         *      Returns the best final_mask for the given data.
          *
          * Check 7.8.3
          */
@@ -96,7 +97,7 @@ namespace Qrio {
          *      Mask value.
          *
          * Post-Conditions:
-         *      Applies the given mask onto the matrix.
+         *      Applies the given final_mask onto the matrix.
          *
          * Check 7.8
          */
@@ -108,7 +109,7 @@ namespace Qrio {
          *
          * Post-Conditions:
          *      Draws two copies of the format bits (with its own error correction code)
-         *      based on the given mask and the ECL.
+         *      based on the given final_mask and the ECL.
          */
         void drawFormatBits(int);
 
@@ -151,7 +152,7 @@ namespace Qrio {
          * Post-Conditions:
          *      Draws the 9x9 finder pattern without the border separator.
          */
-        void drawFinderPattern(int, int);
+        void drawFinderPattern(size_t, size_t);
 
         /*
          * Pre-Conditions:
@@ -160,7 +161,7 @@ namespace Qrio {
          * Post-Conditions:
          *      Draws a 5x5 alignment pattern.
          */
-        void drawAlignmentPattern(int, int);
+        void drawAlignmentPattern(size_t, size_t);
 
         /*
          * Pre-Conditions:
@@ -170,7 +171,7 @@ namespace Qrio {
          * Post-Conditions:
          *      Sets the color of a module & marks it as a function module.
          */
-        void setFunctionModule(int, int, bool);
+        void setFunctionModule(size_t, size_t, bool);
 
         /*
          * Pre-Conditions:
@@ -180,7 +181,7 @@ namespace Qrio {
          *      Returns an ascending list of positions of alignment patterns.
          *      Each position is in the range [0,176] and are used on both the x and y axes.
          */
-        std::vector<int> getAlignmentPatternPositions() const;
+        [[nodiscard]] std::deque<size_t> getAlignmentPatternPositions() const;
 
         /*
          * Pre-Conditions:
@@ -190,7 +191,7 @@ namespace Qrio {
          *      Returns 0, 1, or 2.
          *      Helper for the getPenalty function.
          */
-        [[nodiscard]] int finderPenaltyCountPatterns(const std::array<int, 7>&) const;
+        [[nodiscard]] int finderPenaltyCountPatterns(const std::array<size_t, 7>&) const;
 
         /*
          * Pre-Conditions:
@@ -205,8 +206,8 @@ namespace Qrio {
          * A helper function for getPenaltyScore().
          */
         [[nodiscard]] int finderPenaltyTerminateAndCount(bool,
-                                                         int,
-                                                         std::array<int, 7>&) const;
+                                                         size_t,
+                                                         std::array<size_t, 7>&) const;
 
         /*
          * Pre-Conditions:
@@ -217,7 +218,17 @@ namespace Qrio {
          *      Pushes the given value to the front and drops the last value.
          *      A helper function for getPenaltyScore().
          */
-        void finderPenaltyAddHistory(int, std::array<int, 7>&) const;
+        void finderPenaltyAddHistory(size_t, std::array<size_t, 7>&) const;
+
+        /*
+         * Pre-Conditions:
+         *      An integer n,
+         *      an integer i.
+         *
+         * Post-Conditions:
+         *      Returns the i-th bit in n.
+         */
+        [[nodiscard]] static bool getBit(long, int);
     };
 }
 
