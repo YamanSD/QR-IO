@@ -25,6 +25,8 @@
 #define QR_IO_QRCODE_H
 
 #include <string>
+#include <variant>
+#include <vector>
 
 #include "opencv2/opencv.hpp"
 
@@ -37,15 +39,38 @@
 namespace Qrio {
     class QrCode final {
     public:
+        // TODO finalize
         explicit QrCode(const std::string&);
 
+        // TODO add options
         explicit QrCode(const std::wstring&);
 
-        void save(const std::string&, int, const cv::Scalar&) const;
+        /*
+         * Pre-Conditions:
+         *      File name to save the QR code image at,
+         *      optional scale in pixels (default 10px),
+         *      optional border_width (default 4X, Check 6.3.8),
+         *      optional RGB light_color (default white),
+         *      optional RGB dark_color (default black).
+         *
+         * Post-Conditions:
+         *      Saves the QR code as an image under the given file name,
+         *      in the local directory or the directory specified in the file name.
+         */
+        void save(const std::string& file_name,
+                  int scale = 10,
+                  int border_width = 4,
+                  const cv::Scalar& light_color = {255, 255, 255},
+                  const cv::Scalar& dark_color = {0, 0, 0}) const;
+
+        [[nodiscard]] static std::vector<QrCode> makeStructured(
+                const std::vector<std::variant<std::wstring, std::string>>&);
 
     private:
         /* Stores the generated QR code */
         Structurer matrix;
+
+        [[nodiscard]] static int getVersion(const std::wstring&);
     };
 }
 

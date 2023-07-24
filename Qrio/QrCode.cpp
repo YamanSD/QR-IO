@@ -29,39 +29,55 @@
 
 namespace Qrio {
     using std::string, std::wstring;
-    using cv::Scalar;
+    using cv::imwrite, cv::rectangle, cv::FILLED,
+            cv::Mat, cv::Rect, cv::Scalar;
 
-    QrCode::QrCode(const wstring& data): matrix{ErrorCorrectionEncoder(Encoder(DataAnalyzer(data, 10)))} {
+    QrCode::QrCode(const wstring& data):
+    matrix{ErrorCorrectionEncoder(Encoder(DataAnalyzer(data, getVersion(data))))} {
     }
 
-    void QrCode::save(const string& filename, int borderSize, const cv::Scalar& borderColor) const {
-        // Define the size of each square (10px by 10px)
-        const int squareSize = 10;
+    /*
+     * Pre-Conditions:
+     *      File name to save the QR code image at,
+     *      optional scale in pixels (default 10px),
+     *      optional border_width (default 4X, Check 6.3.8),
+     *      optional RGB light_color (default white),
+     *      optional RGB dark_color (default black).
+     *
+     * Post-Conditions:
+     *      Saves the QR code as an image under the given file name,
+     *      in the local directory or the directory specified in the file name.
+     */
+    void QrCode::save(const string& filename,
+                      int scale,
+                      int border_width,
+                      const Scalar& light_color,
+                      const Scalar& dark_color) const {
+        const int S{static_cast<int>(matrix.size())};
 
-        // Calculate the size of the output image (including the border on all four sides)
-        int rows = (matrix.size() + 2 * borderSize) * squareSize;
-        int cols = (matrix[0].size() + 2 * borderSize) * squareSize;
+        /* Calculate the side of the output image (including the border on all four sides) */
+        const int N{(S + 2 * border_width) * scale};
 
-        // Create an image to store the matrix data with border
-        cv::Mat image(rows, cols, CV_8UC3, borderColor);
+        /* Create an image to store the matrix data with border */
+        Mat image(N, N, CV_8UC3, light_color);
 
-        // Draw the squares based on the matrix data
-        for (int i = 0; i < matrix.size(); ++i) {
-            for (int j = 0; j < matrix[i].size(); ++j) {
-                int x = (j + borderSize) * squareSize; // Apply the horizontal border
-                int y = (i + borderSize) * squareSize; // Apply the vertical border
-                cv::Rect rect(x, y, squareSize, squareSize);
-                if (matrix[i][j] == 0) {
-                    // Draw white square (1) - (255, 255, 255) represents white color
-                    cv::rectangle(image, rect, cv::Scalar(255, 255, 255), cv::FILLED);
+        /* Draw the squares */
+        for (int i{0}; i < N; i++) {
+            for (int j{0}; j < N; j++) {
+                Rect rect((j + border_width) * scale,
+                              (i + border_width) * scale,
+                              scale,
+                              scale);
+
+                if (i < S and j < S and matrix.at(i, j)) {
+                    rectangle(image, rect, dark_color, FILLED);
                 } else {
-                    // Draw black square (0)
-                    cv::rectangle(image, rect, cv::Scalar(0, 0, 0), cv::FILLED);
+                    rectangle(image, rect, light_color, FILLED);
                 }
             }
         }
 
-        // Save the image to the specified filename
-        cv::imwrite(filename, image);
+        /* Save the image to the specified filename */
+        imwrite(filename, image);
     }
 }
