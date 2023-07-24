@@ -167,7 +167,7 @@ namespace Qrio {
      *
      * Check 7.7 -> 7.10
      */
-    Structurer::Structurer(ErrorCorrectionEncoder& ec_encoder, int mask):
+    Structurer::Structurer(const ErrorCorrectionEncoder& ec_encoder, int mask):
             ec_encoder{ec_encoder},
             SquareMatrix(ec_encoder.getMatrixSize()),  // Initialize super class
             function_modules(ec_encoder.getMatrixSize()),

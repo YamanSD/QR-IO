@@ -55,7 +55,7 @@ namespace Qrio {
          *      buffer contains the encoded contents of the DataSegments
          *      in the DataAnalyzer.
          */
-        explicit Encoder(DataAnalyzer&);
+        explicit Encoder(const DataAnalyzer&);
 
         /*
          * Pre-Conditions:

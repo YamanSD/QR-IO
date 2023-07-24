@@ -33,7 +33,7 @@ namespace Qrio {
     using std::deque, std::move,
             std::vector, std::domain_error;
 
-    ErrorCorrectionEncoder::ErrorCorrectionEncoder(Encoder& encoder):
+    ErrorCorrectionEncoder::ErrorCorrectionEncoder(const Encoder& encoder):
     encoder{encoder} {
         assert(encoder.codewords.size() == encoder.getDataCodewordsCount());
         appendEccAndInterleave();

@@ -41,7 +41,7 @@ namespace Qrio {
      *      buffer contains the encoded contents of the DataSegments
      *      in the DataAnalyzer.
      */
-    Encoder::Encoder(DataAnalyzer& data): analyzer{data}, codewords(0) {
+    Encoder::Encoder(const DataAnalyzer& data): analyzer{data}, codewords(0) {
         if (analyzer.struct_count != -1 and analyzer.struct_id != -1) {
             appendSequenceIndicator();
             appendParityData(analyzer.getData());

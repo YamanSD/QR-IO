@@ -26,6 +26,11 @@
 
 #include <string>
 
+#include "opencv2/opencv.hpp"
+
+#include "DataAnalyzer.h"
+#include "Encoder.h"
+#include "ErrorCorrectionEncoder.h"
 #include "Structurer.h"
 
 
@@ -36,10 +41,10 @@ namespace Qrio {
 
         explicit QrCode(const std::wstring&);
 
-        void save(const std::string&) const;
+        void save(const std::string&, int, const cv::Scalar&) const;
 
     private:
-        /* Used to store the QR code */
+        /* Stores the generated QR code */
         Structurer matrix;
     };
 }

@@ -62,7 +62,7 @@ namespace Qrio {
          *
          * Check 7.7 -> 7.10
          */
-        explicit Structurer(ErrorCorrectionEncoder&, int mask = -1);
+        explicit Structurer(const ErrorCorrectionEncoder&, int mask = -1);
 
         /*
          * Pre-Conditions:

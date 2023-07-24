@@ -25,6 +25,7 @@
 #include <Qrio/Encoder.h>
 #include <Qrio/ErrorCorrectionEncoder.h>
 #include <Qrio/Structurer.h>
+#include "Qrio/QrCode.h"
 #include <iostream>
 #include <string>
 #include "opencv2/opencv.hpp"
@@ -32,7 +33,8 @@
 using namespace std;
 using namespace Qrio;
 
-void saveMatrixAsImageWithBorder(const Structurer& matrix, const std::string& filename, int borderSize, const cv::Scalar& borderColor) {
+void saveMatrixAsImageWithBorder(const Structurer& matrix, const std::string& filename,
+                                 int borderSize, const cv::Scalar& borderColor) {
     // Define the size of each square (10px by 10px)
     const int squareSize = 10;
 
@@ -63,44 +65,6 @@ void saveMatrixAsImageWithBorder(const Structurer& matrix, const std::string& fi
     cv::imwrite(filename, image);
 }
 
-void saveMatrixAsImage(const Structurer& matrix, const std::string& filename) {
-    // Define the size of each square (10px by 10px)
-    const int squareSize = 10;
-
-    // Calculate the size of the output image
-    int rows = (matrix.size() + 2) * squareSize;
-    int cols = (matrix[0].size() + 2) * squareSize;
-
-    // Create an image to store the matrix data
-    cv::Mat image(rows, cols, CV_8UC3, cv::Scalar(0, 0, 0)); // Initialize with black pixels
-
-    const auto temp{rows};
-
-    // Draw the squares based on the matrix data
-    for (int i = -1; i < temp; ++i) {
-        for (int j = -1; j < temp; ++j) {
-            cv::Rect rect((j + 1) * squareSize, (i + 1) * squareSize,
-                          squareSize, squareSize);
-
-            if (i == -1 or j == -1 or j == temp - 1 or i == temp - 1) {
-                cv::rectangle(image, rect, cv::Scalar(255, 255, 255), cv::FILLED);
-                continue;
-            }
-
-            if (matrix[i][j] == 0) {
-                // Draw white square (1) - (255, 255, 255) represents white color
-                cv::rectangle(image, rect, cv::Scalar(255, 255, 255), cv::FILLED);
-            } else {
-                // Draw black square (0)
-                cv::rectangle(image, rect, cv::Scalar(0, 0, 0), cv::FILLED);
-            }
-        }
-    }
-
-    // Save the image to the specified filename
-    cv::imwrite(filename,  image);
-}
-
 void printQr(const Structurer &qr) {
     int border = 4;
 //    cout << qr.size() << endl;
@@ -126,18 +90,18 @@ void save(const string& file_name) {
 
 
 int main() {
-    const wstring t{L"01234567"};
+    const wstring t{L"Hello, world!"};
     wstring j{L"\ue4aa\u935fA"};
 
-    auto w = DataAnalyzer(t, 1, Ecl::M);
-    auto temp{Encoder(w)};
-    ErrorCorrectionEncoder k{temp};
-    Structurer f{k, 2};
+    QrCode qr(t);
 //
 
-std::string filename = "./output_image.png";
+    cout << "HERE" << endl;
+    std::string filename = "./output_image.png";
 
-saveMatrixAsImageWithBorder(f, filename, 2, {255, 255, 255});
+    qr.save(filename, 4, {255, 255, 255});
+
+//saveMatrixAsImageWithBorder(f, filename, 4, {255, 255, 255});
 
 return 0;
 }

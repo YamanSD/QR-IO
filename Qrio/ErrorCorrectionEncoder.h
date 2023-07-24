@@ -52,7 +52,7 @@ namespace Qrio {
          * Post-Conditions:
          *      Error correction codewords are generated.
          */
-        explicit ErrorCorrectionEncoder(Encoder&);
+        explicit ErrorCorrectionEncoder(const Encoder&);
 
         /*
          * Pre-Conditions:
