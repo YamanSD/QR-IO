@@ -254,9 +254,11 @@ namespace Qrio {
      *      Draws a 5x5 alignment pattern.
      */
     void Structurer::drawAlignmentPattern(size_t x, size_t y) {
+        long xs{static_cast<long>(x)}, ys{static_cast<long>(y)};
+
         for (int dy{-2}; dy <= 2; dy++) {
             for (int dx{-2}; dx <= 2; dx++) {
-                setFunctionModule(x + dx, y + dy, max(abs(dx), abs(dy)) != 1);
+                setFunctionModule(xs + dx, ys + dy, max(abs(dx), abs(dy)) != 1);
             }
         }
     }
@@ -406,7 +408,7 @@ namespace Qrio {
 
                     if (not function_modules.at(y, x) and bit_index < 8 * ec_encoder.size()) {
                         at(y, x) = getBit(ec_encoder.at(bit_index >> 3),
-                                          static_cast<int>(7 - (bit_index & 7)));
+                                          static_cast<int>(7 - static_cast<int>(bit_index & 7)));
                         bit_index++;
                     }
                 }
@@ -464,7 +466,7 @@ namespace Qrio {
         }
 
         const int aligns{version / 7 + 2};
-        const int steps{version == 32 ? 26 : 2 * (4 * version + 2 * aligns + 1) / (2 * aligns - 2)};
+        const int steps{version == 32 ? 26 : ((4 * version + 2 * aligns + 1) / (2 * aligns - 2) * 2)};
 
         deque<size_t> result{};
 
