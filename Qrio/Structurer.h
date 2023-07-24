@@ -63,6 +63,17 @@ namespace Qrio {
          * Check 7.7 -> 7.10
          */
         explicit Structurer(ErrorCorrectionEncoder&, int mask = -1);
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      None.
+         *
+         * Default constructor used temporarily by the QrCode class.
+         */
+        Structurer();
     private:
         /*
          * Matrix of function modules.
@@ -229,6 +240,28 @@ namespace Qrio {
          *      Returns the i-th bit in n.
          */
         [[nodiscard]] static bool getBit(long, int);
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Rotates the matrix by 90 degrees anti-clockwise.
+         *
+         * Correction after creating the QR.
+         */
+        void rotate();
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      Flips the matrix on its horizontal axis.
+         *
+         * Correction after creating the QR.
+         */
+        void flip();
     };
 }
 

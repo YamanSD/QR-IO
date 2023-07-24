@@ -75,6 +75,17 @@ namespace Qrio {
          *      Returns the number of data bits that can be stored.
          */
         [[nodiscard]] int getVersionBitCount() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      None.
+         *
+         * Default constructor used temporarily by the QrCode class.
+         */
+        Encoder();
     private:
         /*
          * Used to determine whether we added the FNC1,

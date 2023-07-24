@@ -527,4 +527,15 @@ namespace Qrio {
         appendBits(analyzer.struct_id, 4);
         appendBits(analyzer.struct_count, 4);
     }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      None.
+     *
+     * Default constructor used temporarily by the QrCode class.
+     */
+    Encoder::Encoder() = default;
 }

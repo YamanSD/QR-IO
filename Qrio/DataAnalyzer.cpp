@@ -644,4 +644,16 @@ namespace Qrio {
     int DataAnalyzer::getEclBits() const {
         return static_cast<int>(getEcl());
     }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      None.
+     *
+     * Default constructor, used temporarily by the QrCode class.
+     */
+    DataAnalyzer::DataAnalyzer():
+    fnc1_value{-1}, struct_id{-1}, struct_count{-1}, version{-1}, ecl{} {}
 }

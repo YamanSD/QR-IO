@@ -21,7 +21,6 @@
  * SOFTWARE.
  */
 
-
 #include <algorithm>
 #include <array>
 #include <deque>
@@ -187,6 +186,10 @@ namespace Qrio {
         /* Dispose, not needed anymore */
         function_modules.clear();
         function_modules.shrink_to_fit();
+
+        /* Preform correction */
+        rotate();
+        flip();
     }
 
     /*
@@ -604,4 +607,53 @@ namespace Qrio {
 
         return result;
     }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Rotates the matrix by 90 degrees anti-clockwise.
+     *
+     * Correction after creating the QR.
+     */
+    void Structurer::rotate() {
+        for (size_t i{0}; i < size() / 2; ++i) {
+            std::swap((*this)[i], (*this)[size() - i - 1]);
+        }
+
+        for (size_t i{0}; i < size(); ++i) {
+            for (size_t j{i + 1}; j < size(); ++j) {
+                std::swap((*this)[i][j], (*this)[j][i]);
+            }
+        }
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      Flips the matrix on its horizontal axis.
+     *
+     * Correction after creating the QR.
+     */
+    void Structurer::flip() {
+        for (size_t i{0}; i < size() / 2; i++) {
+            for (size_t j{0}; j < size(); ++j) {
+                std::swap(at(i, j), at(size() - 1 - i, j));
+            }
+        }
+    }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      None.
+     *
+     * Default constructor used temporarily by the QrCode class.
+     */
+    Structurer::Structurer() = default;
 }

@@ -206,4 +206,15 @@ namespace Qrio {
     size_t ErrorCorrectionEncoder::getMatrixSize() const {
         return 17 + 4 * encoder.analyzer.getVersion();
     }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      None.
+     *
+     * Default constructor used temporarily by the QrCode class.
+     */
+    ErrorCorrectionEncoder::ErrorCorrectionEncoder() = default;
 }

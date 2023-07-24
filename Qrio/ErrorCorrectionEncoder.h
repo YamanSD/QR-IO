@@ -62,6 +62,17 @@ namespace Qrio {
          *      Returns the size of the QR matrix.
          */
         [[nodiscard]] size_t getMatrixSize() const;
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      None.
+         *
+         * Default constructor used temporarily by the QrCode class.
+         */
+        ErrorCorrectionEncoder();
     private:
         /*
          * Pre-Conditions:

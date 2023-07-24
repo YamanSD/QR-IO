@@ -101,4 +101,15 @@ namespace Qrio {
     vector<bool>::const_reference SquareMatrix::module(size_t x, size_t y) const {
         return at(y, x);
     }
+
+    /*
+     * Pre-Conditions:
+     *      None.
+     *
+     * Post-Conditions:
+     *      None.
+     *
+     * Default constructor used temporarily by the QrCode class.
+     */
+    SquareMatrix::SquareMatrix() = default;
 }

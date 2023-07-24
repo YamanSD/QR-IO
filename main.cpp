@@ -27,10 +27,79 @@
 #include <Qrio/Structurer.h>
 #include <iostream>
 #include <string>
+#include "opencv2/opencv.hpp"
 
 using namespace std;
 using namespace Qrio;
 
+void saveMatrixAsImageWithBorder(const Structurer& matrix, const std::string& filename, int borderSize, const cv::Scalar& borderColor) {
+    // Define the size of each square (10px by 10px)
+    const int squareSize = 10;
+
+    // Calculate the size of the output image (including the border on all four sides)
+    int rows = (matrix.size() + 2 * borderSize) * squareSize;
+    int cols = (matrix[0].size() + 2 * borderSize) * squareSize;
+
+    // Create an image to store the matrix data with border
+    cv::Mat image(rows, cols, CV_8UC3, borderColor);
+
+    // Draw the squares based on the matrix data
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = 0; j < matrix[i].size(); ++j) {
+            int x = (j + borderSize) * squareSize; // Apply the horizontal border
+            int y = (i + borderSize) * squareSize; // Apply the vertical border
+            cv::Rect rect(x, y, squareSize, squareSize);
+            if (matrix[i][j] == 0) {
+                // Draw white square (1) - (255, 255, 255) represents white color
+                cv::rectangle(image, rect, cv::Scalar(255, 255, 255), cv::FILLED);
+            } else {
+                // Draw black square (0)
+                cv::rectangle(image, rect, cv::Scalar(0, 0, 0), cv::FILLED);
+            }
+        }
+    }
+
+    // Save the image to the specified filename
+    cv::imwrite(filename, image);
+}
+
+void saveMatrixAsImage(const Structurer& matrix, const std::string& filename) {
+    // Define the size of each square (10px by 10px)
+    const int squareSize = 10;
+
+    // Calculate the size of the output image
+    int rows = (matrix.size() + 2) * squareSize;
+    int cols = (matrix[0].size() + 2) * squareSize;
+
+    // Create an image to store the matrix data
+    cv::Mat image(rows, cols, CV_8UC3, cv::Scalar(0, 0, 0)); // Initialize with black pixels
+
+    const auto temp{rows};
+
+    // Draw the squares based on the matrix data
+    for (int i = -1; i < temp; ++i) {
+        for (int j = -1; j < temp; ++j) {
+            cv::Rect rect((j + 1) * squareSize, (i + 1) * squareSize,
+                          squareSize, squareSize);
+
+            if (i == -1 or j == -1 or j == temp - 1 or i == temp - 1) {
+                cv::rectangle(image, rect, cv::Scalar(255, 255, 255), cv::FILLED);
+                continue;
+            }
+
+            if (matrix[i][j] == 0) {
+                // Draw white square (1) - (255, 255, 255) represents white color
+                cv::rectangle(image, rect, cv::Scalar(255, 255, 255), cv::FILLED);
+            } else {
+                // Draw black square (0)
+                cv::rectangle(image, rect, cv::Scalar(0, 0, 0), cv::FILLED);
+            }
+        }
+    }
+
+    // Save the image to the specified filename
+    cv::imwrite(filename,  image);
+}
 
 void printQr(const Structurer &qr) {
     int border = 4;
@@ -51,91 +120,26 @@ void printQr(const Structurer &qr) {
     cout << "ALL GOOD " << qr.final_mask << endl;
 }
 
+void save(const string& file_name) {
+
+}
+
 
 int main() {
     const wstring t{L"01234567"};
     wstring j{L"\ue4aa\u935fA"};
-//    wstring j{L"\u0035\u1002\u0FC0\u0AED\u0AD7"
-//              "\u015C\u0147\u0129\u0059\u01BD"
-//              "\u018D\u018A\u0036\u0141\u0144"
-//              "\u0001\u0000\u0249\u0240\u0249"
-//              "\u0000\u0104\u0105\u0113\u0115"
-//              "\u0000\u0208\u01FF\u0008"};
-//    cout << j.size() << endl;
-//
-//    for (auto c: j) {
-//        cout << hex << c << endl;
-//    }
-//    cout << hex << j[0] << endl;
-//    cout << hex << j[1] << endl;
-//    cout << j.data() << endl;
-//    cout << hex << j << endl;
 
-//    for (int i{0}; i < j.size(); i += 3) {
-//        cout << (j.substr(0 3)) << ' ';
-//    }
-//
-//    cout << endl;
-
-////
-
-
-    auto w = DataAnalyzer(t, 1, Ecl::H);
-
+    auto w = DataAnalyzer(t, 1, Ecl::M);
     auto temp{Encoder(w)};
-
-
-//    for (auto c: temp) {
-//        cout << c;
-//    }
-
-
     ErrorCorrectionEncoder k{temp};
+    Structurer f{k, 2};
+//
 
-    //    cout << k.size() << #######  #    #######
-    //#     #   ### #     #
-    //# ### # #     # ### #
-    //# ### # ###   # ### #
-    //# ### #  ##   # ### #
-    //#     #   ### #     #
-    //####### # # # #######
-    //         ###
-    //   ## ##  ##     ##
-    // ## #  ###  # # ### #
-    //      ##### # # # ##
-    // # ##   # # ###   #
-    //  #   ## # # #   # ##
-    //        #    # # ####
-    //####### ### #  ##  #
-    //#     #     ## ## #
-    //# ### # ###  ###  # #
-    //# ### # ## ##   ##
-    //# ### #    # ##  ####
-    //#     #  #  ### # # #
-    //#######  ### ##   ## endl;
-//
-//    for (auto& c: k) {
-//        cout << c << " ";
-//    }
+std::string filename = "./output_image.png";
 
-    Structurer f{k};
-//
-    printQr(f);
-//    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-//
-//    // Read the C++ string containing Japanese characters
-//    std::string inputString;
-//    cout << "Enter the C++ string containing Japanese characters: ";
-//    std::getline(std::cin inputString);
-//
-//    // Convert the string to a UTF-16 encoded wide string
-//    std::wstring utf16String = converter.from_bytes(inputString);
-//
-//    // Print the UTF-16 encoded wide string (2 bytes per character)
-//    for (wchar_t c : utf16String) {
-//        std::wcout << std::hex << static_cast<unsigned>(c) << " ";
-//    }
-//    std::wcout << endl;
-//
-//    return 0;
+saveMatrixAsImageWithBorder(f, filename, 2, {255, 255, 255});
+
+return 0;
 }
+
+

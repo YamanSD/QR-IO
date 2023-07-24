@@ -86,6 +86,17 @@ namespace Qrio {
          *      None.
          *
          * Post-Conditions:
+         *      None.
+         *
+         * Default constructor used temporarily by the QrCode class.
+         */
+        DataAnalyzer();
+
+        /*
+         * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
          *      Returns the chosen QR version.
          */
         [[nodiscard]] int getVersion() const;

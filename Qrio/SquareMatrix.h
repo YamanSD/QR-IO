@@ -49,6 +49,17 @@ namespace Qrio {
 
         /*
          * Pre-Conditions:
+         *      None.
+         *
+         * Post-Conditions:
+         *      None.
+         *
+         * Default constructor used temporarily by the QrCode class.
+         */
+        SquareMatrix();
+
+        /*
+         * Pre-Conditions:
          *      Row index, column index.
          *      Indices are valid (i.e. in [0, n))
          *
