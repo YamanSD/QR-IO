@@ -169,11 +169,6 @@ namespace Qrio {
             checkEci(data, i);
             mapped_value = mapByteChar(data[i]);
             appendBits(mapped_value, 8);
-
-            if (mapped_value == 0x5C) {
-                // Double 0x5C bytes.
-                appendBits(mapped_value, 8);
-            }
         }
     }
 
@@ -201,12 +196,6 @@ namespace Qrio {
                 c -= 0xC140;
             } else {
                 appendBits(c, 13);
-
-                if (c == 0x5C) {
-                    // Double 0x5C values.
-                    appendBits(c, 13);
-                }
-
                 continue;
             }
 

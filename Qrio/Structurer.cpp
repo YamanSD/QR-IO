@@ -556,7 +556,7 @@ namespace Qrio {
                return (x / 3 + y / 2) % 2 == 0;
            },
            [](size_t x, size_t y) {
-               return x + y % 2 + x * y % 3 == 0;
+               return x * y % 2 + x * y % 3 == 0;
            },
            [](size_t x, size_t y) {
                return (x * y % 2 + x * y % 3) % 2 == 0;

@@ -57,6 +57,9 @@ namespace Qrio {
          */
         const int struct_count;
 
+        /* Version boundaries for a QR code */
+        const static int MIN_VERSION{1}, MAX_VERSION{40};
+
         /*
          * Pre-Conditions:
          *      Data string,
@@ -271,9 +274,6 @@ namespace Qrio {
 
         /* Error correction level */
         Ecl ecl;
-
-        /* Version boundaries for a QR code */
-        const static int MIN_VERSION{1}, MAX_VERSION{40};
 
         /*
          * Pre-Conditions:
