@@ -2,4 +2,4 @@
 /BASE/
 /.idea/
 .gitignore
-main.cpp
+/main.cpp
