@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <deque>
 #include <functional>
 #include <utility>
@@ -168,10 +169,10 @@ namespace Qrio {
      * Check 7.7 -> 7.10
      */
     Structurer::Structurer(const ErrorCorrectionEncoder& ec_encoder, int mask):
+            SquareMatrix(ec_encoder.getMatrixSize()), // Initialize super class
             ec_encoder{ec_encoder},
-            SquareMatrix(ec_encoder.getMatrixSize()),  // Initialize super class
-            function_modules(ec_encoder.getMatrixSize()),
-            final_mask{mask} {
+            final_mask{mask},
+            function_modules(ec_encoder.getMatrixSize()) {
 
         drawFunctionPatterns();
         drawCodewords();
@@ -279,7 +280,8 @@ namespace Qrio {
                 xx = static_cast<long>(x) + dx;
                 yy = static_cast<long>(y) + dy;
 
-                if (0 <= xx and xx < size() and 0 <= yy and yy < size()) {
+                if (0 <= xx and xx < static_cast<long>(size())
+                    and 0 <= yy and yy < static_cast<long>(size())) {
                     setFunctionModule(xx, yy, distance != 2 and distance != 4);
                 }
             }
@@ -390,7 +392,8 @@ namespace Qrio {
      *      Function modules need to be marked off before this is called.
      */
     void Structurer::drawCodewords() {
-        assert(ec_encoder.size() == ec_encoder.encoder.getVersionBitCount() / 8);
+        assert(ec_encoder.size() ==
+                static_cast<size_t>(ec_encoder.encoder.getVersionBitCount() / 8));
 
         size_t bit_index{0}, x, y;
         bool is_upward;
@@ -470,7 +473,8 @@ namespace Qrio {
 
         deque<size_t> result{};
 
-        for (size_t i{0}, pos{size() - 7}; i < aligns - 1; i++, pos -= steps) {
+        for (size_t i{0}, pos{size() - 7};
+            i < static_cast<size_t>(aligns - 1); i++, pos -= steps) {
             result.push_front(pos);
         }
 
@@ -488,7 +492,7 @@ namespace Qrio {
      */
     int Structurer::finderPenaltyCountPatterns(const array<int, 7>& history) const {
         auto n{history.at(1)};
-        assert(n <= 3 * size());
+        assert(static_cast<size_t>(n) <= 3 * size());
 
         const bool core{0 < n
                 and history.at(2) == n
@@ -543,10 +547,10 @@ namespace Qrio {
            [](size_t x, size_t y) {
                return (x + y) % 2 == 0;
            },
-           [](size_t x, size_t y) {
+           [](size_t, size_t y) {
                return y % 2 == 0;
            },
-           [](size_t x, size_t y) {
+           [](size_t x, size_t) {
                return x % 3 == 0;
            },
            [](size_t x, size_t y) {
@@ -657,5 +661,5 @@ namespace Qrio {
      *
      * Default constructor used temporarily by the QrCode class.
      */
-    Structurer::Structurer() = default;
+    Structurer::Structurer(): final_mask{-1} {}
 }

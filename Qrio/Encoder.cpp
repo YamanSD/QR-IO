@@ -22,6 +22,7 @@
  */
 
 
+#include <cassert>
 #include <stdexcept>
 #include <vector>
 #include <utility>
@@ -41,7 +42,7 @@ namespace Qrio {
      *      buffer contains the encoded contents of the DataSegments
      *      in the DataAnalyzer.
      */
-    Encoder::Encoder(const DataAnalyzer& data): analyzer{data}, codewords(0) {
+    Encoder::Encoder(const DataAnalyzer& data): codewords(0), analyzer{data} {
         if (analyzer.struct_count != -1 and analyzer.struct_id != -1) {
             appendSequenceIndicator();
             appendParityData(analyzer.getData());
@@ -51,7 +52,9 @@ namespace Qrio {
             encode(segment);
         }
 
-        const auto capacity{8 * getDataCodewordsCount()};
+        const size_t capacity{
+            static_cast<size_t>(8 * getDataCodewordsCount())
+        };
 
         appendBits(static_cast<int>(Designator::TERMINATOR),
                    min(4, static_cast<int>(capacity - size())));
@@ -315,9 +318,9 @@ namespace Qrio {
             "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:"
         };
 
-        for (int i{0}; i < alphanumeric_order.size(); i++) {
+        for (size_t i{0}; i < alphanumeric_order.size(); i++) {
             if (alphanumeric_order[i] == c) {
-                return i;
+                return static_cast<int>(i);
             }
         }
 
@@ -378,9 +381,9 @@ namespace Qrio {
             return 0;
         }
 
-        for (int i{0}; i < byte_order.size(); i++) {
+        for (size_t i{0}; i < byte_order.size(); i++) {
             if (byte_order[i] == c) {
-                return i + 1;
+                return static_cast<int>(i + 1);
             }
         }
 

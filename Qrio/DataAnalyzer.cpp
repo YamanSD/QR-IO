@@ -52,9 +52,9 @@ namespace Qrio {
     DataAnalyzer::DataAnalyzer(wstring data_cpy, int version, Ecl ecl, Designator override_mode,
                                unordered_map<size_t, int> eci,
                                int fnc1, int struct_id, int struct_count):
-    version{version}, data{move(data_cpy)}, fnc1_value{fnc1},
-    ecl{ecl}, eci{move(eci)}, struct_id{struct_id},
-    struct_count{struct_count} {
+    fnc1_value{fnc1}, struct_id{struct_id}, struct_count{struct_count},
+    eci{move(eci)}, version{version}, data{move(data_cpy)},
+    ecl{ecl} {
         checkVersion();
         checkOverrideMode(override_mode);
 
@@ -76,9 +76,10 @@ namespace Qrio {
         }
 
         auto current_mode{getInitialMode()};
-        const auto range{getVersionRange()};
-        size_t left{0}, current{0}, n{data.size()}, temp;
+        const int range{getVersionRange()};
+        size_t left{0}, current{0}, n{data.size()};
         bool switched, was_kanji;
+        int temp;
 
         while (current < n) {
             switched = false;
@@ -222,8 +223,8 @@ namespace Qrio {
      * Check Annex H.
      */
     bool DataAnalyzer::isKanji(long b0, long b1) {
-        return ((0xE0 <= b0 and b0 <= 0xEA) or (0x81 <= b0 and b0 <= 0x9F))
-                and ((0x40 <= b1 and b1 <= 0x7E) or (0x80 <= b1 and b1 <= 0xFC))
+        return (((0xE0 <= b0 and b0 <= 0xEA) or (0x81 <= b0 and b0 <= 0x9F))
+                and ((0x40 <= b1 and b1 <= 0x7E) or (0x80 <= b1 and b1 <= 0xFC)))
                 or ((0xEA <= b0 and b0 <= 0xEB)
                 and ((0x40 <= b1 and b1 <= 0x7E) or (0x80 <= b1 and b1 <= 0xBF)));
     }
@@ -350,8 +351,8 @@ namespace Qrio {
      *      Returns the number of the byte chars at the start
      *      of the wstring.
      */
-    size_t DataAnalyzer::countByte(const wstring& data, size_t start) {
-        size_t counter{0};
+    int DataAnalyzer::countByte(const wstring& data, size_t start) {
+        int counter{0};
 
         for (auto i{start}; i < data.size(); i++) {
             if (not isByte(data[i])) {
@@ -373,8 +374,8 @@ namespace Qrio {
      *      Returns the number of the numeric chars at the start
      *      of the wstring.
      */
-    size_t DataAnalyzer::countNumeric(const wstring& data, size_t start) {
-        size_t counter{0};
+    int DataAnalyzer::countNumeric(const wstring& data, size_t start) {
+        int counter{0};
 
         for (auto i{start}; i < data.size(); i++) {
             if (not isNumeric(data[i])) {
@@ -396,8 +397,8 @@ namespace Qrio {
      *      Returns the number of the alphanumeric chars at the start
      *      of the wstring.
      */
-    size_t DataAnalyzer::countAlphanumeric(const wstring& data, size_t start) {
-        size_t counter{0};
+    int DataAnalyzer::countAlphanumeric(const wstring& data, size_t start) {
+        int counter{0};
 
         for (auto i{start}; i < data.size(); i++) {
             if (not isAlphanumeric(data[i])) {
@@ -419,8 +420,8 @@ namespace Qrio {
      *      Returns the number of the Kenji byte pairs at the start
      *      of the substring.
      */
-    size_t DataAnalyzer::countKanji(const wstring& data, size_t start) {
-        size_t counter{0};
+    int DataAnalyzer::countKanji(const wstring& data, size_t start) {
+        int counter{0};
 
         for (size_t i{start}; i < data.size(); i += 2) {
             // If the bit pairs are not Kanji break.

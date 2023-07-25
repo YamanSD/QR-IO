@@ -21,6 +21,7 @@
  * SOFTWARE.
  */
 
+#include <cassert>
 #include <deque>
 #include <utility>
 #include <stdexcept>
@@ -35,7 +36,8 @@ namespace Qrio {
 
     ErrorCorrectionEncoder::ErrorCorrectionEncoder(const Encoder& encoder):
     encoder{encoder} {
-        assert(encoder.codewords.size() == encoder.getDataCodewordsCount());
+        assert(static_cast<int>(encoder.codewords.size())
+                == encoder.getDataCodewordsCount());
         appendEccAndInterleave();
     }
 
@@ -49,7 +51,7 @@ namespace Qrio {
      * Implemented as a lookup table instead of an algorithm.
      */
     vector<int> ErrorCorrectionEncoder::reedSolomonDivisor() const {
-        const auto degree{encoder.analyzer.getEccPerBlock()};
+        const int degree{encoder.analyzer.getEccPerBlock()};
 
         if (degree < 1 or 255 < degree) {
             throw domain_error("Degree out of bounds");
@@ -72,7 +74,7 @@ namespace Qrio {
 
         for (int i{0}; i < degree; i++) {
             // Multiply the current product by (x - r^i)
-            for (size_t j{0}; j < degree; j++) {
+            for (int j{0}; j < degree; j++) {
                 result[j] = reedSolomonMultiply(result[j], root);
 
                 if (j < degree - 1) {
@@ -152,7 +154,7 @@ namespace Qrio {
         const auto width{blocks.at(0).size()};
 
         for (size_t i{0}; i < width; i++) {
-            for (size_t j{0}; j < blocksCount; j++) {
+            for (size_t j{0}; j < static_cast<size_t>(blocksCount); j++) {
                 /* Skip the padding byte in short blocks */
                 if (i != static_cast<unsigned>(shortBlocksLength - eccPerBlock)
                     or static_cast<unsigned>(shortBlocksCount) <= j) {

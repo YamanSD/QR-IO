@@ -119,7 +119,7 @@ namespace Qrio {
                    int version, int mask, int fnc1, int struct_id, int struct_count):
                    matrix{ErrorCorrectionEncoder(Encoder(
                            DataAnalyzer(processedData(data), getVersion(data, ecl, version),
-                                        ecl, override_mode, move(getEci(data)),
+                                        ecl, override_mode, getEci(data),
                                         fnc1, struct_id, struct_count))), mask} {}
 
     /*
@@ -211,7 +211,7 @@ namespace Qrio {
      *      invalid_argument exception is thrown.
      */
     wstring QrCode::processedData(const variant<wstring, string>& data) {
-        wstring result{move(extractWideString(data))};
+        wstring result{extractWideString(data)};
         wstring result_cpy{result};
         const auto N{result_cpy.size()};
 
@@ -337,7 +337,7 @@ namespace Qrio {
                                           int version,
                                           int mask,
                                           int fnc1) {
-        if (data.size() == 0 or 16 < data.size()) {
+        if (data.empty() or 16 < data.size()) {
             throw invalid_argument(
                     "Structured append requires at least 1 data string and at most 16\n"
                     );

@@ -48,7 +48,7 @@ namespace Qrio {
         ErrorCorrectionEncoder ec_encoder;
 
         /* Final mask of the QR code */
-        int final_mask;
+        int final_mask{};
 
         /*
          * Pre-Conditions:

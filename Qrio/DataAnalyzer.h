@@ -331,7 +331,7 @@ namespace Qrio {
          *      Returns the number of the numeric chars at the start
          *      of the substring
          */
-        [[nodiscard]] static size_t countNumeric(const std::wstring&, size_t start = 0);
+        [[nodiscard]] static int countNumeric(const std::wstring&, size_t start = 0);
 
         /*
          * Pre-Conditions:
@@ -343,7 +343,7 @@ namespace Qrio {
          *      of the substring
          */
         [[nodiscard, maybe_unused]]
-            static size_t countByte(const std::wstring&, size_t start = 0);
+            static int countByte(const std::wstring&, size_t start = 0);
 
         /*
          * Pre-Conditions:
@@ -354,7 +354,7 @@ namespace Qrio {
          *      Returns the number of the alphanumeric chars at the start
          *      of the substring.
          */
-        [[nodiscard]] static size_t countAlphanumeric(const std::wstring&, size_t start = 0);
+        [[nodiscard]] static int countAlphanumeric(const std::wstring&, size_t start = 0);
 
         /*
          * Pre-Conditions:
@@ -365,7 +365,7 @@ namespace Qrio {
          *      Returns the number of the Kenji byte pairs at the start
          *      of the substring.
          */
-        [[nodiscard]] static size_t countKanji(const std::wstring &data, size_t start = 0);
+        [[nodiscard]] static int countKanji(const std::wstring &data, size_t start = 0);
 
         /*
          * Pre-Conditions:

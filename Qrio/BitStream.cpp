@@ -44,7 +44,7 @@ namespace Qrio {
         checkInput(value, n);
 
         /* Append bit by bit from n-th bit to the 0-th bit */
-        for (int i{0}; i < n; i++) {
+        for (size_t i{0}; i < n; i++) {
             push_back(value & (1 << (n - i - 1)));
         }
     }
