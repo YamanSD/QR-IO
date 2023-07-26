@@ -159,8 +159,8 @@ int main() {
     qrw_2A.save("qrw_2A.png");
     qrw_3.save("qrw_3.png");
     qr_0.save("qr_0.png");
-    qr_1.save("qr_0.png");
-    qr_2.save("qr_0.png");
+    qr_1.save("qr_1.png");
+    qr_2.save("qr_2.png");
 
     const auto& qrs{QrCode::makeStructured(sap)};
 
