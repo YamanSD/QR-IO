@@ -44,8 +44,8 @@ namespace Qrio {
      *      File name to save the QR code image at,
      *      optional scale in pixels (default 10px),
      *      optional border_width (default 4X, Check 6.3.8),
-     *      optional RGB light_color (default white),
-     *      optional RGB dark_color (default black).
+     *      optional BGR light_color (default white),
+     *      optional BGR dark_color (default black).
      *
      * Post-Conditions:
      *      Saves the QR code as an image under the given file name,

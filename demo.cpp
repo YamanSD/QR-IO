@@ -120,7 +120,7 @@ int main() {
     // Pure Kanji encoding.
     QrCode qrw_2{wstr_2, Ecl::H, Designator::KANJI};
 
-    // Automatic detection
+    // Automatic detection & interchanging with byte.
     QrCode qrw_2A{wstr_2, Ecl::H};
 
     /* ECI */
@@ -136,6 +136,37 @@ int main() {
                         L"1233333333", L"alndaskjndasjndakjndaADASDKHJASDKHBASD"};
 
     /* Generating the images */
+    qrw_0L.save("qrw_0L.png"); // Standard
+
+    qrw_0M.save("qrw_0M.png", 15); // 15 pixels per module
+
+    qrw_0Q.save("qrw_0Q.png", 10, 2); // Border width of 2 modules.
+
+    // Replace light color by blue.
+    qrw_0H.save("qrw_0H.png", 10, 4, {255, 0, 0});
+
+    // Swap light and dark module colors.
+    qrw_0H.save("qrw_0A.png", 10, 4,
+                {0, 0, 0}, {255, 255, 255});
+
+    qrw_0B.save("qrw_0B.png");
+    qrw_0C.save("qrw_0C.png");
+    qrw_0D.save("qrw_0D.png");
+    qrw_0E.save("qrw_0E.png");
+
+    qrw_1.save("qrw_1.png");
+    qrw_2.save("qrw_2.png");
+    qrw_2A.save("qrw_2A.png");
+    qrw_3.save("qrw_3.png");
+    qr_0.save("qr_0.png");
+    qr_1.save("qr_0.png");
+    qr_2.save("qr_0.png");
+
+    const auto& qrs{QrCode::makeStructured(sap)};
+
+    for (size_t i{0}; i < qrs.size(); i++) {
+        qrs[i].save("qrsap_" + to_string(i) + ".png");
+    }
 
     return 0;
 }
