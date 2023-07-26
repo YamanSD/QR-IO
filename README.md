@@ -3,7 +3,7 @@
 ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white)
 ![OpenCV](https://img.shields.io/badge/opencv-%23white.svg?style=for-the-badge&logo=opencv&logoColor=white)
 
-![QR-IO - QR Code](./images/qrio0.png)
+![QR-IO - QR Code](./images/qrio_0.png)
 
 ## Description
 
@@ -21,6 +21,7 @@ Currently supports generating QR codes only.
 - Supports automatic encoding.
 - Supports manual ECI usage.
 - Supports manual structured append without ECI.
+- Supports FNC1 encoding.
 
 ## Upcoming features
 
@@ -59,4 +60,55 @@ Before running the program, ensure you have the following installed on your syst
 
 ## Example QRs 
 
+- "This is a test" (1-L):
+  
+     ![QR-IO - QR Code](./images/qrw_0L.png)
 
+- "This is a test" (1-M):
+ 
+    ![QR-IO - QR Code](./images/qrw_0M.png)
+
+
+- "This is a test" (1-Q):
+ 
+    ![QR-IO - QR Code](./images/qrw_0Q.png)
+
+- "This is a test" (1-H):
+ 
+    ![QR-IO - QR Code](./images/qrw_0H.png)
+
+- "This is a test" (25-H):
+ 
+    ![QR-IO - QR Code](./images/qrw_0B.png)
+
+- "This is a test" (1-H):
+ 
+    ![QR-IO - QR Code](./images/qrw_0D.png)
+
+- "This is a test" (1-H):
+ 
+    ![QR-IO - QR Code](./images/qrw_0E.png)
+
+- Check qrw_1 in [demo.cpp](./demp.cpp):
+ 
+    ![QR-IO - QR Code](./images/qrw_1.png)
+
+- Check qrw_2 in [demo.cpp](./demp.cpp):
+ 
+    ![QR-IO - QR Code](./images/qrw_2.png)
+
+- "This is a Kanji test: \u935F\uE4AA\u89D7\uE4AA!":
+ 
+    ![QR-IO - QR Code](./images/qrw_2A.png)
+
+- "You can also use regular strings!":
+ 
+    ![QR-IO - QR Code](./images/qr_0.png)
+
+- A google search link:
+ 
+    ![QR-IO - QR Code](./images/qr_1.png)
+
+- "Hello world!" in binary:
+
+    ![QR-IO - QR Code](./images/qr_2.png)
