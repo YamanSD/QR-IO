@@ -18,11 +18,12 @@ Currently supports generating QR codes only.
 - Easy-to-use C++ interface.
 - Utilizes the OpenCV library for image processing and QR code generation.
 - Generates high-quality QR code images.
-- Supports the most efficient encoding for all strings that are either pure Kanji or do not contain any Kanji.
-- Supports automatic encoding.
-- Supports manual ECI usage.
-- Supports manual structured append without ECI.
-- Supports FNC1 encoding.
+- Uses the most efficient encoding for all strings that are either pure Kanji or do not contain any Kanji (Annex J).
+- Automatic encoding.
+- Manual ECI usage.
+- Manual structured append without ECI.
+- FNC1 encoding.
+- Custom light & dark colors.
 
 ## Upcoming features
 
