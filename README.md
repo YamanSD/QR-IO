@@ -41,7 +41,15 @@ Before running the program, ensure you have the following installed on your syst
 
 1. Clone the QR-IO repository to your local machine.
 2. Add your main to the directory.
-3. Navigate to the directory & run the following commands:
+3. Modify the following section in the [CMakeLists.txt](./CMakeLists.txt) file:
+  ```text
+      ... 
+      add_executable(
+        QR_IO
+        demo.cpp <- Replace with the name of your main file and add your files
+      ...
+  ```
+5. Navigate to the directory & run the following commands:
    - `cmake .`
    - `make`
       - On Unix:    `./QR_IO`
