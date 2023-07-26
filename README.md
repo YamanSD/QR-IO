@@ -105,7 +105,7 @@ Before running the program, ensure you have the following installed on your syst
  
     ![QR-IO - QR Code](./images/qr_0.png)
 
-- A google search link:
+- An innocent google search link ;) (non-malicious):
  
     ![QR-IO - QR Code](./images/qr_1.png)
 
