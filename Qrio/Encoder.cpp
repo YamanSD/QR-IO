@@ -113,10 +113,14 @@ namespace Qrio {
      * Check 7.4.3
      */
     void Encoder::encodeNumeric(const DataSegment& data) {
+        checkEci(data, 0);
         const auto n{encodeMode(data)};
 
         for (size_t i{0}; 3 <= n - i; i += 3) {
-            checkEci(data, i);
+            if (i) {
+                checkEci(data, i);
+            }
+
             appendBits(data.substr(i, 3), 10);
         }
 
@@ -138,11 +142,15 @@ namespace Qrio {
      * Check 7.4.4
      */
     void Encoder::encodeAlpha(const DataSegment& data) {
+        checkEci(data, 0);
         const auto n{encodeMode(data)};
         int c0, c1;
 
         for (size_t i{0}; 2 <= n - i; i += 2) {
-            checkEci(data, i);
+            if (i) {
+                checkEci(data, i);
+            }
+
             c0 = mapAlphanumericChar(data[i]),
             c1 = mapAlphanumericChar(data[i + 1]);
 
@@ -165,11 +173,15 @@ namespace Qrio {
      * Check 7.4.5
      */
     void Encoder::encodeByte(const DataSegment& data) {
+        checkEci(data, 0);
         const auto n{encodeMode(data)};
         int mapped_value;
 
         for (size_t i{0}; i < n; i++) {
-            checkEci(data, i);
+            if (i) {
+                checkEci(data, i);
+            }
+
             mapped_value = mapByteChar(data[i]);
             appendBits(mapped_value, 8);
         }
@@ -186,11 +198,15 @@ namespace Qrio {
      * Check 7.4.6
      */
     void Encoder::encodeKanji(const DataSegment& data) {
+        checkEci(data, 0);
         const auto n{encodeMode(data)};
         wchar_t c, c0, c1;
 
         for (size_t i{0}; i < n; i++) {
-            checkEci(data, i);
+            if (i) {
+                checkEci(data, i);
+            }
+
             c = data[i];
 
             if (0x8140 <= c and c <= 0x9FFC) {

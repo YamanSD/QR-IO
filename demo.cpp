@@ -82,7 +82,7 @@ int main() {
      * First five greek letters under the greek ECI (based on example in ISO standard)
      * ECI designator manually placed.
      * */
-    wstring wstr_3{L"\\000006\xA1\xA2\xA3\xA4\xA5"};
+    wstring wstr_3{L"\\000009\xA1\xA2\xA3\xA4\xA5"};
 
     /* Tests on wstr_0 */
     QrCode
