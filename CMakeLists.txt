@@ -13,7 +13,7 @@ include_directories(.)
 
 add_executable(
         QR_IO
-        main.cpp
+        demo.cpp
         Qrio/BitStream.cpp
         Qrio/BitStream.h
         Qrio/SquareMatrix.cpp
@@ -31,7 +31,7 @@ add_executable(
         Qrio/Structurer.h
         Qrio/Ecl.h
         Qrio/QrCode.cpp
-        Qrio/QrCode.h)
+        Qrio/QrCode.h Qrio/Ecl.cpp)
 
 target_compile_options(QR_IO PRIVATE -Wall -Wextra -Wpedantic)
 

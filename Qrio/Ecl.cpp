@@ -21,28 +21,13 @@
  * SOFTWARE.
  */
 
-#ifndef QR_IO_ECL_H
-#define QR_IO_ECL_H
-
 #include <iostream>
+
+#include "Ecl.h"
 
 
 namespace Qrio {
-    /*
-     * Enumerates the Error Correction Levels.
-     * L: Low,
-     * M: Medium,
-     * Q: Quartile,
-     * H: High
-     *
-     * Check table 12 page 55.
-     */
-    enum class Ecl {
-        L = 0b01,
-        M = 0b00,
-        Q = 0b11,
-        H = 0b10,
-    };
+    using std::ostream;
 
     /*
      * Pre-Conditions:
@@ -52,8 +37,16 @@ namespace Qrio {
      * Post-Conditions:
      *      Displays the given ECL into the output stream.
      */
-    std::ostream& operator<<(std::ostream&, const Ecl&);
+    ostream& operator<<(ostream& out, const Ecl& ecl) {
+        switch (ecl) {
+            case Ecl::L:
+                return out << 'L';
+            case Ecl::M:
+                return out << 'M';
+            case Ecl::Q:
+                return out << 'Q';
+            case Ecl::H:
+                return out << 'H';
+        }
+    }
 }
-
-
-#endif //QR_IO_ECL_H

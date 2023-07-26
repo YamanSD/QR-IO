@@ -118,7 +118,7 @@ namespace Qrio {
     QrCode::QrCode(const variant<wstring, string>& data, Ecl ecl, Designator override_mode,
                    int version, int mask, int fnc1, int struct_id, int struct_count):
                    matrix{ErrorCorrectionEncoder(Encoder(
-                           DataAnalyzer(processedData(data), getVersion(data, ecl, version),
+                           DataAnalyzer(processedData(data), getVersion(data, ecl, version, override_mode),
                                         ecl, override_mode, getEci(data),
                                         fnc1, struct_id, struct_count))), mask} {}
 
@@ -136,7 +136,8 @@ namespace Qrio {
      */
     int QrCode::getVersion(const variant<wstring, string>& data,
                            Ecl ecl,
-                           int preferred_version) {
+                           int preferred_version,
+                           Designator mode) {
         /* Minimum & maximum possible versions, based on the standard */
         const static int MIN_VERSION{DataAnalyzer::MIN_VERSION},
                             MAX_VERSION{DataAnalyzer::MAX_VERSION};
@@ -150,7 +151,7 @@ namespace Qrio {
             while (low <= high) {
                 mid = (high + low) / 2;
 
-                if (testVersion(data, ecl, mid)) {
+                if (testVersion(data, ecl, mid, mode)) {
                     prev_success = mid;
                     high = mid - 1;
                 } else {
@@ -166,7 +167,7 @@ namespace Qrio {
         }
 
         /* Use preferred version */
-        if (testVersion(data, ecl, preferred_version)) {
+        if (testVersion(data, ecl, preferred_version, mode)) {
             return preferred_version;
         } else {
             throw length_error("Given preferred version does not fit data");
@@ -184,10 +185,10 @@ namespace Qrio {
      *      and data, otherwise false.
      */
     bool QrCode::testVersion(const variant<wstring, string>& data,
-                             Ecl ecl, int version) {
+                             Ecl ecl, int version, Designator mode) {
         try {
             if (holds_alternative<wstring>(data)) {
-                DataAnalyzer analyzer{get<wstring>(data), version, ecl};
+                DataAnalyzer analyzer{get<wstring>(data), version, ecl, mode};
                 Encoder encoder{analyzer};
             } else {
                 wstring temp{get<string>(data).begin(), get<string>(data).end()};

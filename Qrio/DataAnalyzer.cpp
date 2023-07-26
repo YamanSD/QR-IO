@@ -71,8 +71,7 @@ namespace Qrio {
             push_back(DataSegment{data, 0, data.size(), Designator::BYTE});
             return;
         } else if (override_mode != Designator::TERMINATOR) {
-            push_back(DataSegment{data, 0, data.size(), override_mode});
-            return;
+            throw domain_error("Invalid override mode, must be numeric, alphanumeric, byte, or kanji.");
         }
 
         auto current_mode{getInitialMode()};
@@ -123,12 +122,16 @@ namespace Qrio {
                     left = current;
                 }
             } else { // Kanji and Byte
-                was_kanji = current_mode == Designator::KANJI;
+                was_kanji = (current_mode == Designator::KANJI);
 
                 if (current_mode == Designator::BYTE
-                    and 9 + min(3 * range, 4) <= countKanji(data, current)) {
+                    and isKanji(data[current])) {
                     switched = true;
                     current_mode = Designator::KANJI;
+                } else if (current_mode == Designator::KANJI
+                    and isCompatibleByte({data[current]})) {
+                    switched = true;
+                    current_mode = Designator::BYTE;
                 }
 
                 temp = countAlphanumeric(data, current);

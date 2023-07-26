@@ -165,7 +165,7 @@ namespace Qrio {
          */
         [[nodiscard]] static int getVersion(
                 const std::variant<std::wstring, std::string>&,
-                Ecl, int);
+                Ecl, int, Designator);
 
         /*
          * Pre-Conditions:
@@ -191,7 +191,7 @@ namespace Qrio {
          */
         [[nodiscard]] static bool testVersion(
                 const std::variant<std::wstring, std::string>&,
-                Ecl, int);
+                Ecl, int, Designator);
 
         /*
          * Pre-Conditions:
