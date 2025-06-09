@@ -8,6 +8,8 @@ find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
 
 include_directories(.)
 
@@ -31,6 +33,16 @@ add_executable(
         Qrio/Structurer.h
         Qrio/Ecl.h
         Qrio/QrCode.cpp
+        Qrio/main.cpp
+        Qrio/ImageBinarization.hpp
+        Qrio/ImageBinarization.cpp
+        Qrio/FinderPatternModel.hpp
+        Qrio/Filesystem.cpp
+        Qrio/Filesystem.hpp
+        Qrio/Generator.cpp
+        Qrio/Generator.hpp
+        Qrio/CodeFinder.hpp
+        Qrio/CodeFinder.cpp
         Qrio/QrCode.h Qrio/Ecl.cpp)
 
 target_compile_options(QR_IO PRIVATE -Wall -Wextra -Wpedantic)
