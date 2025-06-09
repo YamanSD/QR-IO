@@ -15,7 +15,7 @@ include_directories(.)
 
 add_executable(
         QR_IO
-        demo.cpp
+        main.cpp
         Qrio/BitStream.cpp
         Qrio/BitStream.h
         Qrio/SquareMatrix.cpp
@@ -33,7 +33,6 @@ add_executable(
         Qrio/Structurer.h
         Qrio/Ecl.h
         Qrio/QrCode.cpp
-        Qrio/main.cpp
         Qrio/ImageBinarization.hpp
         Qrio/ImageBinarization.cpp
         Qrio/FinderPatternModel.hpp
